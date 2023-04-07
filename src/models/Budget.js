@@ -15,9 +15,15 @@ const budgetSchema = new mongoose.Schema({
     type: Date,
     default: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
   },
+  user_id: {
+    type: ObjectID,
+    ref: 'user_id',
+    required: true,
+  },
   category_id: {
     type: ObjectID,
     ref: 'category',
+    required: true,
   },
 });
 
