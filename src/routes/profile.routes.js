@@ -1,6 +1,13 @@
 const express = require('express');
-const { getProfile, createProfile, updateProfile } = require('../controllers/profile.controller');
-const { validateProfile, validateProfileUpdate } = require('../middlewares/validator');
+const {
+  getProfile,
+  createProfile,
+  updateProfile,
+} = require('../controllers/profile.controller');
+const {
+  validateProfile,
+  validateProfileUpdate,
+} = require('../middlewares/validator');
 
 const router = express.Router();
 
