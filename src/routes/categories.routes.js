@@ -1,30 +1,32 @@
+const { check } = require('express-validator/check');
 const express = require('express');
 const router = express.Router();
-const auth = require('../middlewares/authToken');
 
 const {
   createCategory,
   getCategoryById,
   getAllCategories,
 } = require('../controllers/category.controller');
-
-const { check, validationResult } = require('express-validator/check');
+const validateToken = require('../middlewares/authToken');
 
 // @route   POST api/categories
 // @desc    Creates a new category
-// @access  Public
+// @access  Private
 router
   .route('/')
-  .post([check('title', 'Title is required').not().isEmpty()], createCategory);
+  .post(
+    [validateToken, [check('title', 'Title is required').not().isEmpty()]],
+    createCategory
+  );
 
 // @route   GET api/categories/:id
 // @desc    Returns an existing category
-// @access  Public
-router.route('/:id').get(getCategoryById);
+// @access  Private
+router.route('/:id').get(validateToken, getCategoryById);
 
 // @route   GET api/categories
 // @desc    Returns all existing categories
-// @access  Public
-router.route('/').get(getAllCategories);
+// @access  Private
+router.route('/').get(validateToken, getAllCategories);
 
 module.exports = router;

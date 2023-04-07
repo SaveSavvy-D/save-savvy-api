@@ -3,6 +3,8 @@ const { login, signup, deleteUser } = require('../controllers/user.controller');
 const validateToken = require('../middlewares/authToken');
 const { validateUser, validateLogin } = require('../middlewares/validator');
 
+const { login, signup } = require('../controllers/user.controller');
+
 const router = express.Router();
 
 router.post('/login', validateLogin, login);
