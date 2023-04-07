@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User, Profile } = require('../models/index');
+const { User } = require('../models/index');
 const {
   sendSuccessResponse,
   sendFailureResponse,
@@ -26,9 +26,7 @@ const login = async (req, res) => {
 
 const signup = async (req, res) => {
   try {
-    const {
-      name, image, currency, earningDetails, email, password,
-    } = req.body;
+    const { email, password } = req.body;
     const user = await User.findOne({ email });
 
     if (user) {
@@ -39,16 +37,9 @@ const signup = async (req, res) => {
       email,
       password: hashpass,
     });
-    const userProfile = await Profile.create({
-      name,
-      image,
-      currency,
-      earning_details: earningDetails,
-      user_id: newUser.id,
-    });
     const token = jwt.sign({ userId: newUser }, process.env.TOKEN_SECRET, { expiresIn: '10h' });
 
-    return sendSuccessResponse(res, { token, userProfile, newUser }, 'User created successfully');
+    return sendSuccessResponse(res, { token, newUser }, 'User created successfully');
   } catch (error) {
     console.log('error: ', error);
     return sendServerErrorResponse(res, error);

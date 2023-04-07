@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { sendAuthErrorResponse } = require('../utils/response.helper');
 
 const validateToken = (req, res, next) => {
   const bearerHeader = req.headers.authorization;
@@ -11,18 +12,17 @@ const validateToken = (req, res, next) => {
     jwt.verify(bearerToken, process.env.TOKEN_SECRET, async (err, authData) => {
       if (err) {
         console.log(err, 'error in token verify');
-        return res.sendStatus(403);
+        return sendAuthErrorResponse(res, 'Not Authorized');
       }
       const user = await User.findById(authData.userId);
       if (!user) {
-        return res.sendStatus(403);
+        return sendAuthErrorResponse(res, 'Not Authorized');
       }
       req.user = user;
       return next();
     });
   } else {
-    // Forbidden
-    res.sendStatus(403);
+    sendAuthErrorResponse(res, 'Not Authorized');
   }
 };
 

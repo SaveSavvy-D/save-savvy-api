@@ -33,6 +33,14 @@ const sendFailureResponse = (res, message) => {
   });
 };
 
+const sendNotFoundResponse = (res, message) => {
+  res.status(404).json({
+    type: 'notFound',
+    status: false,
+    message,
+  });
+};
+
 const sendServerErrorResponse = (res, error) => {
   res.status(500).json({
     type: 'error',
@@ -42,10 +50,20 @@ const sendServerErrorResponse = (res, error) => {
   });
 };
 
+const sendAuthErrorResponse = (res, message) => {
+  res.status(401).json({
+    type: 'failed',
+    status: false,
+    message,
+  });
+};
+
 module.exports = {
   sendSuccessResponse,
   sendCreateResponse,
   sendUpdateResponse,
   sendFailureResponse,
   sendServerErrorResponse,
+  sendNotFoundResponse,
+  sendAuthErrorResponse,
 };
