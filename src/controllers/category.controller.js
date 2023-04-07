@@ -44,7 +44,7 @@ const CategoryController = {
         return sendFailureResponse(res, [{ msg: 'Category not found' }]);
       }
 
-      res.json(category);
+      return sendSuccessResponse(res, category);
     } catch (err) {
       console.error(err.message);
 
@@ -64,7 +64,7 @@ const CategoryController = {
         return sendFailureResponse(res, [{ msg: 'Categories not found' }]);
       }
 
-      res.json(categories);
+      return sendSuccessResponse(res, categories);
     } catch (err) {
       console.error(err.message);
 
