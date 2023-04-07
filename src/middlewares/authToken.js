@@ -3,12 +3,12 @@ const User = require('../models/User');
 
 const validateToken = (req, res, next) => {
   const bearerHeader = req.headers.authorization;
-  // Check if bearer is undefined
+
   if (typeof bearerHeader !== 'undefined') {
     const bearer = bearerHeader.split(' ');
     const bearerToken = bearer[1];
 
-    jwt.verify(bearerToken, process.env.SECRET, async (err, authData) => {
+    jwt.verify(bearerToken, process.env.TOKEN_SECRET, async (err, authData) => {
       if (err) {
         console.log(err, 'error in token verify');
         return res.sendStatus(403);

@@ -1,10 +1,8 @@
 const express = require('express');
+const UserRouter = require('./user.routes');
 
 const router = express.Router();
 
-router.get('/app', (req, res, next) => {
-  res.send('Api Running...');
-  next();
-});
+router.use('/auth', UserRouter);
 
 module.exports = router;
