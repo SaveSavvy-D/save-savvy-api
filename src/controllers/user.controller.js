@@ -16,7 +16,9 @@ const UserController = {
         return sendFailureResponse(res, [{ msg: 'Invalid email or password' }]);
       }
 
-      const token = jwt.sign({ userId: user }, process.env.TOKEN_SECRET, { expiresIn: '10h' });
+      const token = jwt.sign({ userId: user }, process.env.TOKEN_SECRET, {
+        expiresIn: '10h',
+      });
 
       return sendSuccessResponse(res, { token }, 'User logged in successfully');
     } catch (error) {
@@ -38,9 +40,15 @@ const UserController = {
         email,
         password: hashpass,
       });
-      const token = jwt.sign({ userId: newUser }, process.env.TOKEN_SECRET, { expiresIn: '10h' });
+      const token = jwt.sign({ userId: newUser }, process.env.TOKEN_SECRET, {
+        expiresIn: '10h',
+      });
 
-      return sendSuccessResponse(res, { token, newUser }, 'User created successfully');
+      return sendSuccessResponse(
+        res,
+        { token, newUser },
+        'User created successfully'
+      );
     } catch (error) {
       console.log('error: ', error);
       return sendServerErrorResponse(res, error);
@@ -52,10 +60,18 @@ const UserController = {
       const deletedUser = await User.findByIdAndDelete(id);
       const deletedProfile = await Profile.findOneAndDelete({ user: id });
       if (!deletedProfile) {
-        return sendSuccessResponse(res, { deletedUser }, 'User deleted successfully');
+        return sendSuccessResponse(
+          res,
+          { deletedUser },
+          'User deleted successfully'
+        );
       }
 
-      return sendSuccessResponse(res, { user_id: deletedUser.id, profile_id: deletedProfile.id }, 'User and Profile deleted successfully');
+      return sendSuccessResponse(
+        res,
+        { user_id: deletedUser.id, profile_id: deletedProfile.id },
+        'User and Profile deleted successfully'
+      );
     } catch (error) {
       console.log('error: ', error);
       return sendServerErrorResponse(res, error);
