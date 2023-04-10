@@ -66,6 +66,14 @@ const sendValidationErrorResponse = (res, errors) => {
   });
 };
 
+const sendDeleteResponse = (res, message) => {
+  res.status(204).json({
+    type: 'delete',
+    status: true,
+    message,
+  });
+};
+
 module.exports = {
   sendSuccessResponse,
   sendCreateResponse,
@@ -75,4 +83,5 @@ module.exports = {
   sendNotFoundResponse,
   sendAuthErrorResponse,
   sendValidationErrorResponse,
+  sendDeleteResponse,
 };
