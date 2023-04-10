@@ -52,14 +52,7 @@ const validateProfileUpdate = [
     .matches(/^https?:\/\/.*\/.*\.(png|webp|jpeg|jpg)\??.*$/gim)
     .withMessage('Invalid image file type')
     .optional(),
-  (req, res, next) => {
-    const errors = validationResult(req).array();
-    const formattedErrors = errors.map(({ value, msg }) => ({ value, msg }));
-    if (errors.length) {
-      return sendValidationErrorResponse(res, formattedErrors);
-    }
-    return next();
-  },
+  validationResponse,
 ];
 
 const validateBudget = [

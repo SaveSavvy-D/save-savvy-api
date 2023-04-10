@@ -77,5 +77,20 @@ const UserController = {
       return sendServerErrorResponse(res, error);
     }
   },
+  deleteUser: async (req, res) => {
+    try {
+      const { id } = req.user;
+      const deletedUser = await User.findByIdAndDelete(id);
+      const deletedProfile = await Profile.findOneAndDelete({ user: id });
+      if (!deletedProfile) {
+        return sendSuccessResponse(res, { deletedUser }, 'User deleted successfully');
+      }
+
+      return sendSuccessResponse(res, { user_id: deletedUser.id, profile_id: deletedProfile.id }, 'User and Profile deleted successfully');
+    } catch (error) {
+      console.log('error: ', error);
+      return sendServerErrorResponse(res, error);
+    }
+  },
 };
 module.exports = UserController;
