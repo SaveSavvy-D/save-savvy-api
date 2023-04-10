@@ -13,7 +13,7 @@ const getProfile = async (req, res) => {
     const profile = await Profile.findOne({ user: user.id });
 
     if (!profile) {
-      sendNotFoundResponse(res, 'Profile not found');
+      return sendNotFoundResponse(res, 'Profile not found');
     }
     return sendSuccessResponse(res, { profile }, 'Profile fetched successfully');
   } catch (error) {
