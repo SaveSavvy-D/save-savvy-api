@@ -25,11 +25,11 @@ const sendUpdateResponse = (res, data, message) => {
   });
 };
 
-const sendFailureResponse = (res, message) => {
+const sendFailureResponse = (res, errors) => {
   res.status(400).json({
     type: 'bad',
     status: false,
-    message,
+    errors,
   });
 };
 
