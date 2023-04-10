@@ -21,24 +21,18 @@ const validateLogin = [
 ];
 
 const validateUser = [
-  body('email').isEmail().withMessage('Invalid email'),
+  validateLogin,
   body('password')
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters'),
-  (req, res, next) => {
-    const errors = validationResult(req).array();
-    const formattedErrors = errors.map(({ value, msg }) => ({ value, msg }));
-    if (errors.length) {
-      return sendValidationErrorResponse(res, formattedErrors);
-    }
-    return next();
-  },
+  validationResponse,
 ];
 
 const validateProfile = [
   body('name').notEmpty().withMessage('User Name must be provided'),
   body('currency').notEmpty().withMessage('Currency must be provided'),
   body('image')
+    .optional()
     .isURL()
     .withMessage('Invalid Url')
     .matches(/^https?:\/\/.*\/.*\.(png|webp|jpeg|jpg)\??.*$/gim)
