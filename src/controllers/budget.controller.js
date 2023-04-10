@@ -1,13 +1,23 @@
-import Budget from '../models/Budget';
+const Budget = require('../models/Budget');
+const {
+  sendSuccessResponse,
+  sendServerErrorResponse,
+  sendNotFoundResponse,
+  sendFailureResponse,
+  sendUpdateResponse,
+  sendDeleteResponse,
+} = require('../utils/response.helper');
 
 const BudgetController = {
   getAllBudgets: async (req, res) => {
     try {
       const budgets = await Budget.find();
-      if (!budgets) return res.status(400).json({ msg: 'No budget found' });
-      res.json(budgets);
+      if (budgets.length === 0)
+        return sendNotFoundResponse(res, 'No budget found');
+      sendSuccessResponse(res, { budgets }, 'Budgets fetched successfully');
     } catch (error) {
-      res.status(500).json({ msg: 'Server Error' });
+      console.log('error: ', error);
+      sendServerErrorResponse(res, error);
     }
   },
   getMyBudgets: async (req, res) => {
@@ -15,22 +25,23 @@ const BudgetController = {
       const budgets = await Budget.find({
         user_id: req.user.id,
       });
-      if (!budgets) return res.status(400).json({ msg: 'No budget found' });
-      res.json(budgets);
+      if (!budgets) return sendNotFoundResponse(res, 'No budget found');
+      sendSuccessResponse(res, { budgets }, 'Budgets fetched successfully');
     } catch (error) {
-      res.status(500).json({ msg: 'Server Error' });
+      console.log('error: ', error);
+      sendServerErrorResponse(res, error);
     }
   },
   getBudgetById: async (req, res) => {
     const { id } = req.params;
     try {
       const budget = await Budget.findById(id);
-      if (!budget) return res.status(400).json({ msg: 'No budget found' });
-      res.json(budget);
+      if (!budget) return sendNotFoundResponse(res, 'Budget not found');
+      sendSuccessResponse(res, { budget }, 'Budgets fetched successfully');
     } catch (error) {
       if (error.kind === 'ObjectId')
-        return res.status(400).json({ msg: 'No budget found' });
-      res.status(500).json({ msg: 'Server Error' });
+        return sendNotFoundResponse(res, 'Budget not found');
+      sendServerErrorResponse(res, error);
     }
   },
   getBudgetByUserId: async (req, res) => {
@@ -39,12 +50,11 @@ const BudgetController = {
       const budgets = await Budget.find({
         user_id: user_id,
       });
-      if (!budgets) return res.status(400).json({ msg: 'No budget found' });
-      res.json(budgets);
+      if (!budgets) return sendNotFoundResponse(res, 'No budget found');
+      sendSuccessResponse(res, { budgets }, 'Budgets fetched successfully');
     } catch (error) {
-      if (error.kind === 'ObjectId')
-        return res.status(400).json({ msg: 'No budget found' });
-      res.status(500).json({ msg: 'Server Error' });
+      console.log('error: ', error);
+      sendServerErrorResponse(res, error);
     }
   },
   getBudgetByCategoryId: async (req, res) => {
@@ -53,12 +63,11 @@ const BudgetController = {
       const budgets = await Budget.find({
         category_id: category_id,
       });
-      if (!budgets) return res.status(400).json({ msg: 'No budget found' });
-      res.json(budgets);
+      if (!budgets) return sendNotFoundResponse(res, 'No budget found');
+      sendSuccessResponse(res, { budgets }, 'Budgets fetched successfully');
     } catch (error) {
-      if (error.kind === 'ObjectId')
-        return res.status(400).json({ msg: 'No budget found' });
-      res.status(500).json({ msg: 'Server Error' });
+      console.log('error: ', error);
+      sendServerErrorResponse(res, error);
     }
   },
   createBudget: async (req, res) => {
@@ -74,9 +83,10 @@ const BudgetController = {
     try {
       const budget = new Budget(budgetAttr);
       await budget.save();
-      res.status(201).json(budget);
+      sendSuccessResponse(res, { budget }, 'Profile created successfully');
     } catch (error) {
-      res.status(500).json({ msg: 'Server Error' });
+      console.log('error: ', error);
+      sendServerErrorResponse(res, error);
     }
   },
   updateBudget: async (req, res) => {
@@ -108,20 +118,23 @@ const BudgetController = {
           { $set: updatedAttr },
           { new: true }
         );
-        return res.json(budget);
+        return sendUpdateResponse(res, budget, 'Budget updated successfully');
       }
-      res.status(400).json({ msg: 'Budget not found' });
+      sendNotFoundResponse(res, 'Budget not found');
     } catch (error) {
-      res.status(500).json({ msg: 'Server Error' });
+      if (error.kind === 'ObjectId')
+        return sendNotFoundResponse(res, 'Budget not found');
+      console.log('error: ', error);
+      sendServerErrorResponse(res, error);
     }
   },
   deleteBudget: async (req, res) => {
     const { id } = req.params;
     try {
       await Budget.findOneAndRemove({ _id: id });
-      res.status(204).json({ msg: 'Budget deleted' });
+      return sendDeleteResponse(res, 'Budget deleted');
     } catch (error) {
-      res.status(500).json({ msg: 'Server error' });
+      return sendServerErrorResponse(res, error);
     }
   },
 };
