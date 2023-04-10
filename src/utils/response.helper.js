@@ -58,6 +58,14 @@ const sendAuthErrorResponse = (res, message) => {
   });
 };
 
+const sendValidationErrorResponse = (res, errors) => {
+  res.status(422).json({
+    type: 'validation error',
+    status: false,
+    errors,
+  });
+};
+
 module.exports = {
   sendSuccessResponse,
   sendCreateResponse,
@@ -66,4 +74,5 @@ module.exports = {
   sendServerErrorResponse,
   sendNotFoundResponse,
   sendAuthErrorResponse,
+  sendValidationErrorResponse,
 };
