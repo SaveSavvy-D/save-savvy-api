@@ -2,6 +2,18 @@ const mongoose = require('mongoose');
 
 const ObjectID = mongoose.Schema.Types.ObjectId;
 
+const earningDetailsSchema = new mongoose.Schema({
+  month: {
+    type: String,
+    default: new Date().toLocaleString('default', { month: 'long' }),
+  },
+  amount: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+});
+
 const profileSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -9,22 +21,17 @@ const profileSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    required: true,
   },
   currency: {
     type: String,
     required: true,
   },
   earning_details: {
-    date: {
-      type: Date,
-      required: true,
-    },
-    amount: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
+    type: [earningDetailsSchema],
+    default: () => [{
+      month: new Date().toLocaleString('default', { month: 'long' }),
+      amount: 0,
+    }],
   },
   user: {
     type: ObjectID,

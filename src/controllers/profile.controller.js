@@ -30,7 +30,7 @@ const ProfileController = {
       } = req.body;
       const profile = await Profile.findOne({ user: user.id });
       if (profile) {
-        return sendFailureResponse(res, 'Profile already exist');
+        return sendFailureResponse(res, [{ msg: 'Profile already exist' }]);
       }
 
       const userProfile = await Profile.create({
@@ -59,9 +59,13 @@ const ProfileController = {
       return sendUpdateResponse(res, profile, 'Profile updated successfully');
     } catch (error) {
       console.log('error: ', error);
+      if (error.kind === 'ObjectId') {
+        return sendFailureResponse(res, [{ msg: 'Profile not found' }]);
+      }
+
       return sendServerErrorResponse(res, error);
     }
   },
 };
 
-module.exports = { ProfileController };
+module.exports = ProfileController;
