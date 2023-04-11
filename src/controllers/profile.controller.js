@@ -18,6 +18,10 @@ const ProfileController = {
 
       return sendSuccessResponse(res, { profile }, 'Profile fetched successfully');
     } catch (error) {
+      if (error.kind === 'ObjectId') {
+        return sendNotFoundResponse(res, 'Profile not found');
+      }
+
       console.log('error: ', error);
       return sendServerErrorResponse(res, error);
     }
@@ -58,11 +62,11 @@ const ProfileController = {
 
       return sendUpdateResponse(res, profile, 'Profile updated successfully');
     } catch (error) {
-      console.log('error: ', error);
       if (error.kind === 'ObjectId') {
-        return sendFailureResponse(res, [{ msg: 'Profile not found' }]);
+        return sendNotFoundResponse(res, 'Profile not found');
       }
 
+      console.log('error: ', error);
       return sendServerErrorResponse(res, error);
     }
   },
