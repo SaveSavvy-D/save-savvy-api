@@ -4,8 +4,8 @@ const ObjectID = mongoose.Schema.Types.ObjectId;
 
 const earningDetailsSchema = new mongoose.Schema({
   month: {
-    type: String,
-    default: new Date().toLocaleString('default', { month: 'long' }),
+    type: Date,
+    default: new Date(),
   },
   amount: {
     type: Number,
@@ -29,14 +29,13 @@ const profileSchema = new mongoose.Schema({
   earning_details: {
     type: [earningDetailsSchema],
     default: () => [{
-      month: new Date().toLocaleString('default', { month: 'long' }),
+      month: new Date(),
       amount: 0,
     }],
   },
   user: {
     type: ObjectID,
-    ref:
-    'Profile',
+    ref: 'Profile',
   },
 });
 
