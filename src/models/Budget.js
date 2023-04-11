@@ -4,7 +4,7 @@ const ObjectID = mongoose.Schema.Types.ObjectId;
 
 const budgetSchema = new mongoose.Schema({
   threshold: {
-    type: Float32Array,
+    type: Number,
     required: true,
   },
   start_date: {
