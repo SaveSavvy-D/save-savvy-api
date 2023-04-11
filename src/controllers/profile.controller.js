@@ -75,10 +75,6 @@ const ProfileController = {
       }
 
       console.log('error: ', error);
-      if (error.kind === 'ObjectId') {
-        return sendFailureResponse(res, [{ msg: 'Profile not found' }]);
-      }
-
       return sendServerErrorResponse(res, error);
     }
   },
