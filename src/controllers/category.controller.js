@@ -1,5 +1,4 @@
 const Category = require('../models/Category');
-const { validationResult } = require('express-validator/check');
 
 const {
   sendSuccessResponse,
@@ -9,11 +8,6 @@ const {
 
 const CategoryController = {
   createCategory: async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return sendFailureResponse(res, errors.array());
-    }
-
     const { title, description, image } = req.body;
 
     let newCategory = {
