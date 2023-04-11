@@ -4,14 +4,14 @@
   "description": "Expense management application",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node server",
+    "server": "nodemon server"
   },
   "repository": {
     "type": "git",
     "url": "git+https://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@github.com/SaveSavvy-D/save-savvy-api.git"
   },
-  "author": "Muhammad Haseeb, Haroon Omer, Usama Munim",
+  "author": "Haroon Omer",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/SaveSavvy-D/save-savvy-api/issues"
@@ -20,20 +20,14 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "config": "^3.3.9",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-validator": "^6.15.0",
+    "gravatar": "^1.8.2",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.0.3",
-    "morgan": "^1.10.0"
+    "mongoose": "^7.0.3"
   },
   "devDependencies": {
     "concurrently": "^8.0.1",
-    "eslint": "^8.37.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.27.5",
     "nodemon": "^2.0.22"
   }
 }
