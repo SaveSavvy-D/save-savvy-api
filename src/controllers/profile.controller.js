@@ -19,7 +19,7 @@ const ProfileController = {
       return sendSuccessResponse(
         res,
         { profile },
-        'Profile fetched successfully'
+        'Profile fetched successfully',
       );
     } catch (error) {
       if (error.kind === 'ObjectId') {
@@ -33,7 +33,9 @@ const ProfileController = {
   createProfile: async (req, res) => {
     try {
       const { user } = req;
-      const { name, image, currency, earningDetails } = req.body;
+      const {
+        name, image, currency, earningDetails,
+      } = req.body;
       const profile = await Profile.findOne({ user: user.id });
       if (profile) {
         return sendFailureResponse(res, [{ msg: 'Profile already exist' }]);
@@ -50,7 +52,7 @@ const ProfileController = {
       return sendSuccessResponse(
         res,
         { userProfile },
-        'Profile created successfully'
+        'Profile created successfully',
       );
     } catch (error) {
       console.log('error: ', error);

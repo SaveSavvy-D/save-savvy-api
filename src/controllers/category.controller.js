@@ -1,4 +1,4 @@
-const Category = require('../models/Category');
+const { Category } = require('../models/index');
 
 const {
   sendSuccessResponse,
@@ -7,7 +7,7 @@ const {
 } = require('../utils/response.helper');
 
 const CategoryController = {
-  createCategory: async (req, res, next) => {
+  createCategory: async (req, res) => {
     const { title, description, image } = req.body;
 
     const newCategory = {
@@ -22,7 +22,7 @@ const CategoryController = {
       return sendSuccessResponse(
         res,
         category,
-        'Category created successfully'
+        'Category created successfully',
       );
     } catch (err) {
       console.error(err.message);
@@ -30,7 +30,7 @@ const CategoryController = {
     }
   },
 
-  getCategoryById: async (req, res, next) => {
+  getCategoryById: async (req, res) => {
     try {
       const category = await Category.findById(req.params.id);
 
@@ -42,7 +42,7 @@ const CategoryController = {
     } catch (err) {
       console.error(err.message);
 
-      if (err.kind == 'ObjectId') {
+      if (err.kind === 'ObjectId') {
         return sendFailureResponse(res, [{ msg: 'Category not found' }]);
       }
 
@@ -50,7 +50,7 @@ const CategoryController = {
     }
   },
 
-  getAllCategories: async (req, res, next) => {
+  getAllCategories: async (req, res) => {
     try {
       const categories = await Category.find();
 
@@ -62,7 +62,7 @@ const CategoryController = {
     } catch (err) {
       console.error(err.message);
 
-      if (err.kind == 'ObjectId') {
+      if (err.kind === 'ObjectId') {
         return sendFailureResponse(res, [{ msg: 'Categories not found' }]);
       }
 
