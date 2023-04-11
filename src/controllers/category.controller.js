@@ -10,14 +10,14 @@ const CategoryController = {
   createCategory: async (req, res, next) => {
     const { title, description, image } = req.body;
 
-    let newCategory = {
+    const newCategory = {
       title,
       description,
       image,
     };
 
     try {
-      let category = await Category.create(newCategory);
+      const category = await Category.create(newCategory);
 
       return sendSuccessResponse(
         res,
@@ -54,7 +54,7 @@ const CategoryController = {
     try {
       const categories = await Category.find();
 
-      if (!categories) {
+      if (categories.length === 0) {
         return sendFailureResponse(res, [{ msg: 'Categories not found' }]);
       }
 

@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 
+const ObjectID = mongoose.Schema.Types.ObjectId;
+
 const ExpenseSchema = new mongoose.Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectID,
     ref: 'user',
   },
   category: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectID,
     ref: 'category',
   },
   title: {
