@@ -1,7 +1,5 @@
 const express = require('express');
 const routes = express.Router();
-const Budget = require('../models/Budget');
-const validateToken = require('../middlewares/authToken');
 const { validateBudget } = require('../middlewares/validator');
 const {
   getAllBudgets,
@@ -14,18 +12,14 @@ const {
   deleteBudget,
 } = require('../controllers/budget.controller');
 
-routes.get('/', validateToken, getAllBudgets);
+routes.route('/').get(getAllBudgets).post(validateBudget, createBudget);
+routes.route('/my').get(getMyBudgets);
+routes
+  .route('/:id')
+  .get(getBudgetById)
+  .put(validateBudget, updateBudget)
+  .delete(deleteBudget);
+routes.route('/user/:user_id').get(getBudgetByUserId);
+routes.route('/category/:category_id').get(getBudgetByCategoryId);
 
-routes.get('/my', validateToken, getMyBudgets);
-
-routes.get('/:id', validateToken, getBudgetById);
-
-routes.get('/:user_id', validateToken, getBudgetByUserId);
-
-routes.get('/category/:category_id', validateToken, getBudgetByCategoryId);
-
-routes.post('/', validateToken, validateBudget, createBudget);
-
-routes.update('/:id', validateToken, validateBudget, updateBudget);
-
-routes.delete('/:id', validateToken, deleteBudget);
+module.exports = routes;
