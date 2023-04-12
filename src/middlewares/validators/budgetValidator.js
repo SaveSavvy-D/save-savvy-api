@@ -3,7 +3,7 @@ const { validationResponse } = require('./validatorResponse');
 
 const validateBudget = [
   body('threshold', 'Threshold is required').notEmpty(),
-  body('category_id', 'CategoryId is required').notEmpty(),
+  body('categoryId', 'CategoryId is required').notEmpty(),
   validationResponse,
 ];
 

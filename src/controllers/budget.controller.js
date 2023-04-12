@@ -23,9 +23,9 @@ const BudgetController = {
   getMyBudgets: async (req, res) => {
     try {
       const budgets = await Budget.find({
-        user_id: req.user.id,
+        userId: req.user.id,
       });
-      if (!budgets) return sendNotFoundResponse(res, 'No budget found');
+      if (budgets.length === 0) return sendNotFoundResponse(res, 'No budget found');
       return sendSuccessResponse(
         res,
         { budgets },
@@ -55,9 +55,9 @@ const BudgetController = {
     const { userId } = req.params;
     try {
       const budgets = await Budget.find({
-        user_id: userId,
+        userId,
       });
-      if (!budgets) return sendNotFoundResponse(res, 'No budget found');
+      if (budgets.length === 0) return sendNotFoundResponse(res, 'No budget found');
       return sendSuccessResponse(
         res,
         { budgets },
@@ -73,9 +73,9 @@ const BudgetController = {
     const { categoryId } = req.params;
     try {
       const budgets = await Budget.find({
-        category_id: categoryId,
+        categoryId,
       });
-      if (!budgets) return sendNotFoundResponse(res, 'No budget found');
+      if (budgets.length === 0) return sendNotFoundResponse(res, 'No budget found');
       return sendSuccessResponse(
         res,
         { budgets },
@@ -92,9 +92,9 @@ const BudgetController = {
       threshold, startDate, endDate, categoryId,
     } = req.body;
     let budgetAttr = {};
-    budgetAttr.user_id = req.user.id;
-    if (startDate) budgetAttr.start_date = startDate;
-    if (endDate) budgetAttr.end_date = endDate;
+    budgetAttr.userId = req.user.id;
+    if (startDate) budgetAttr.startDate = startDate;
+    if (endDate) budgetAttr.endDate = endDate;
     budgetAttr = { ...budgetAttr, threshold, categoryId };
 
     try {
@@ -117,7 +117,7 @@ const BudgetController = {
     } = req.body;
     let updatedAttr = {};
     if (startDate) updatedAttr.startDate = startDate;
-    else updatedAttr.startDate = Date.now;
+    else updatedAttr.startDate = Date.now();
 
     if (endDate) updatedAttr.endDate = endDate;
     else {

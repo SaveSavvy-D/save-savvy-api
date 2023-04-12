@@ -67,7 +67,7 @@ const sendValidationErrorResponse = (res, errors) => {
 };
 
 const sendDeleteResponse = (res, message) => {
-  res.status(204).json({
+  res.status(200).json({
     type: 'delete',
     status: true,
     message,

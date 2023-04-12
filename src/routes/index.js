@@ -9,9 +9,9 @@ const router = express.Router();
 
 router.use('/auth', UserRouter);
 router.use('/profile', validateToken, ProfileRouter);
-router.use('/budgets', BudgetRoutes);
 // router.use('/expenses', require('./expenses.routes'));
 
 router.use('/categories', validateToken, CategoryRouter);
+router.use('/budgets', validateToken, BudgetRoutes);
 
 module.exports = router;

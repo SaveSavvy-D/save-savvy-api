@@ -20,7 +20,7 @@ routes
   .get(getBudgetById)
   .put(validateBudget, updateBudget)
   .delete(deleteBudget);
-routes.route('/user/:user_id').get(getBudgetByUserId);
-routes.route('/category/:category_id').get(getBudgetByCategoryId);
+routes.route('/user/:userId').get(getBudgetByUserId);
+routes.route('/category/:categoryId').get(getBudgetByCategoryId);
 
 module.exports = routes;

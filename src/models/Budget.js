@@ -7,20 +7,20 @@ const budgetSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  start_date: {
+  startDate: {
     type: Date,
     default: Date.now(),
   },
-  end_date: {
+  endDate: {
     type: Date,
     default: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
   },
-  user_id: {
+  userId: {
     type: ObjectID,
     ref: 'user_id',
     required: true,
   },
-  category_id: {
+  categoryId: {
     type: ObjectID,
     ref: 'category',
     required: true,
