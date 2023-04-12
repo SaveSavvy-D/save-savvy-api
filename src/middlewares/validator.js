@@ -64,7 +64,7 @@ const validateProfileUpdate = [
 const validateBudget = [
   body('threshold', 'Threshold is required').notEmpty(),
   body('category_id', 'CategoryId is required').notEmpty(),
-  (req, res) => {
+  (req, res, next) => {
     const errors = validationResult(req).array();
     const formattedErrors = errors.map(({ value, msg }) => ({ value, msg }));
     if (errors.length) {
