@@ -28,10 +28,12 @@ const profileSchema = new mongoose.Schema({
   },
   earning_details: {
     type: [earningDetailsSchema],
-    default: () => [{
-      month: new Date(),
-      amount: 0,
-    }],
+    default: () => [
+      {
+        month: new Date(),
+        amount: 0,
+      },
+    ],
   },
   user: {
     type: ObjectID,

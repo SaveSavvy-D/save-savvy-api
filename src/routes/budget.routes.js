@@ -1,6 +1,7 @@
 const express = require('express');
+
 const routes = express.Router();
-const { validateBudget } = require('../middlewares/validator');
+const { validateBudget } = require('../middlewares/validators/budgetValidator');
 const {
   getAllBudgets,
   getMyBudgets,

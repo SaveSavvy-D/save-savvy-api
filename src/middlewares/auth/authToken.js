@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const { sendAuthErrorResponse } = require('../utils/response.helper');
+const User = require('../../models/User');
+const { sendAuthErrorResponse } = require('../../utils/response.helper');
 
 const validateToken = (req, res, next) => {
   const bearerHeader = req.headers.authorization;

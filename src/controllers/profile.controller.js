@@ -16,7 +16,11 @@ const ProfileController = {
         return sendNotFoundResponse(res, 'Profile not found');
       }
 
-      return sendSuccessResponse(res, { profile }, 'Profile fetched successfully');
+      return sendSuccessResponse(
+        res,
+        { profile },
+        'Profile fetched successfully',
+      );
     } catch (error) {
       if (error.kind === 'ObjectId') {
         return sendNotFoundResponse(res, 'Profile not found');
@@ -45,7 +49,11 @@ const ProfileController = {
         user: user.id,
       });
 
-      return sendSuccessResponse(res, { userProfile }, 'Profile created successfully');
+      return sendSuccessResponse(
+        res,
+        { userProfile },
+        'Profile created successfully',
+      );
     } catch (error) {
       console.log('error: ', error);
       return sendServerErrorResponse(res, error);
@@ -55,7 +63,9 @@ const ProfileController = {
     try {
       const { id } = req.params;
       const updateBody = req.body;
-      const profile = await Profile.findByIdAndUpdate(id, updateBody, { new: true });
+      const profile = await Profile.findByIdAndUpdate(id, updateBody, {
+        new: true,
+      });
       if (!profile) {
         return sendNotFoundResponse(res, 'Profile not found');
       }
