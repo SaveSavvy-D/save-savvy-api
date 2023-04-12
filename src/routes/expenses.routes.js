@@ -1,17 +1,28 @@
 const express = require('express');
 
 const router = express.Router();
-// const auth = require('../../middleware/auth');
-// const Profile = require('../../models/profile');
-// const User = require('../../models/user');
-// const auth = require('../middlewares/authToken');
-// const { check, validationResult } = require('express-validator/check');
 
-// @route   GET api/expenses/index
-// @desc    Get current users profile
+const {
+  createExpense,
+  getAllExpenses,
+  getExpenseByUserId,
+} = require('../controllers/expense.controller.js');
+const { validateExpense } = require('../middlewares/validators/expenseValidator.js');
+const validateToken = require('../middlewares/auth/authToken.js');
+
+// @route   POST api/expenses
+// @desc    Creates a new expense
 // @access  Private
-router.post('/', async (req, res) => {
-  res.send('Expenses running');
-});
+router.post('/', [validateToken, validateExpense], createExpense);
+
+// @route   GET api/expenses/my
+// @desc    Returns an existing category
+// @access  Private
+router.get('/my', validateToken, getExpenseByUserId);
+
+// @route   GET api/expenses
+// @desc    Returns all existing expenses
+// @access  Public
+router.get('/', getAllExpenses);
 
 module.exports = router;

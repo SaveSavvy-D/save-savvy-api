@@ -15,10 +15,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: process.env.APP_URL || '' }));
 
-app.get('/', (req, res) => {
-  res.send('Api Running...');
-});
-
 const indexRoute = require('./src/routes/index');
 
 app.use('/api', indexRoute);
