@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 const { sendValidationErrorResponse } = require('../../utils/response.helper');
 
 const validationResponse = (req, res, next) => {
@@ -10,26 +10,4 @@ const validationResponse = (req, res, next) => {
   return next();
 };
 
-const validateLogin = [
-  body('email')
-    .notEmpty()
-    .withMessage('Email is required')
-    .isEmail()
-    .withMessage('Invalid email'),
-  body('password').notEmpty().withMessage('Password is required'),
-  validationResponse,
-];
-
-const validateUser = [
-  validateLogin,
-  body('password')
-    .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters'),
-  validationResponse,
-];
-
-module.exports = {
-  validateLogin,
-  validateUser,
-  validationResponse,
-};
+module.exports = { validationResponse };
