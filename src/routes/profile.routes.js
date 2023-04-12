@@ -7,7 +7,7 @@ const {
 const {
   validateProfile,
   validateProfileUpdate,
-} = require('../middlewares/validator');
+} = require('../middlewares/validators/profileValidator');
 
 const router = express.Router();
 

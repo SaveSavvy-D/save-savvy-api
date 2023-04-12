@@ -7,7 +7,7 @@ const {
   getCategoryById,
   getAllCategories,
 } = require('../controllers/category.controller');
-const { validateCategory } = require('../middlewares/validator');
+const { validateCategory } = require('../middlewares/validators/categoryValidator');
 
 // @route   POST api/categories
 // @desc    Creates a new category
