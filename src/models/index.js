@@ -8,8 +8,8 @@ const Budget = require('./Budget');
 module.exports = {
   Alert,
   Budget,
-  Category,
-  Expense,
   Profile,
   User,
+  Category,
+  Expense,
 };

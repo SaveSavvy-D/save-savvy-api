@@ -30,5 +30,12 @@ module.exports = {
       { blankLine: 'always', prev: 'directive', next: '*' },
       { blankLine: 'any', prev: 'directive', next: 'directive' },
     ],
+    'no-underscore-dangle': ['error', { allow: ['_id', '_user_id'] }],
+    'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
+    'no-await-in-loop': 'off',
+    'no-continue': 'off',
+    'import/no-extraneous-dependencies': ['error', {
+      devDependencies: true, optionalDependencies: false, peerDependencies: false, packageDir: './',
+    }],
   },
 };
