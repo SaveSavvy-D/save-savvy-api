@@ -1,4 +1,4 @@
-const { Category } = require('../models/index');
+const { Category } = require('../models');
 const {
   sendSuccessResponse,
   sendFailureResponse,

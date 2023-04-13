@@ -1,4 +1,4 @@
-const Budget = require('../models/Budget');
+const { Budget } = require('../models');
 const {
   sendSuccessResponse,
   sendServerErrorResponse,
@@ -129,7 +129,7 @@ const BudgetController = {
     }
     updatedAttr = {
       ...updatedAttr,
-      user_id: req.user.id,
+      userId: req.user.id,
       threshold,
       categoryId,
     };

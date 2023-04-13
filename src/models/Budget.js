@@ -17,7 +17,7 @@ const budgetSchema = new mongoose.Schema({
   },
   userId: {
     type: ObjectID,
-    ref: 'user_id',
+    ref: 'user',
     required: true,
   },
   categoryId: {

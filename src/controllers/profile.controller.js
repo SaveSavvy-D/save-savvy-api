@@ -1,4 +1,4 @@
-const { Profile } = require('../models/index');
+const { Profile } = require('../models');
 const {
   sendSuccessResponse,
   sendServerErrorResponse,
@@ -45,7 +45,7 @@ const ProfileController = {
         name,
         image,
         currency,
-        earning_details: earningDetails,
+        earningDetails,
         user: user.id,
       });
 

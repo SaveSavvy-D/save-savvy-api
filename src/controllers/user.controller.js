@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+
 const { hashpassword, comparePassword } = require('../utils/user.helper');
-const { Profile, User } = require('../models/index');
+const { Profile, User } = require('../models');
 const {
   sendSuccessResponse,
   sendFailureResponse,

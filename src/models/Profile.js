@@ -26,7 +26,7 @@ const profileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  earning_details: {
+  earningDetails: {
     type: [earningDetailsSchema],
     default: () => [
       {
