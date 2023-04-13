@@ -1,5 +1,4 @@
 const { Category } = require('../models/index');
-
 const {
   sendSuccessResponse,
   sendFailureResponse,

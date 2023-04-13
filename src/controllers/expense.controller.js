@@ -1,9 +1,11 @@
-const { Expense } = require('../models/index');
-
+const { Expense, Category } = require('../models/index');
 const {
   sendSuccessResponse,
   sendFailureResponse,
   sendServerErrorResponse,
+  sendDeleteResponse,
+  sendNotFoundResponse,
+  sendUpdateResponse,
 } = require('../utils/response.helper');
 
 const ExpenseController = {
@@ -11,6 +13,11 @@ const ExpenseController = {
     const {
       title, amount, description, images, date, categoryId,
     } = req.body;
+
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return sendFailureResponse(res, [{ msg: 'Category not found' }]);
+    }
 
     const newExpense = {
       title,
@@ -75,6 +82,48 @@ const ExpenseController = {
       }
 
       return sendServerErrorResponse(res, err.message);
+    }
+  },
+
+  deleteExpense: async (req, res) => {
+    try {
+      const deletedExpense = await Expense.findOneAndRemove({ _id: req.params.id });
+      if (!deletedExpense) {
+        return sendNotFoundResponse(res, 'Expense not found');
+      }
+      return sendDeleteResponse(res, 'Expense deleted');
+    } catch (error) {
+      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Expense not found'); }
+      return sendServerErrorResponse(res, error);
+    }
+  },
+
+  updateExpense: async (req, res) => {
+    const { id } = req.params;
+    const {
+      title, amount, description, images, date, categoryId,
+    } = req.body;
+
+    const updatedAttr = {
+      title, amount, description, images, date, category: categoryId, user: req.user.id,
+    };
+
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return sendFailureResponse(res, [{ msg: 'Category not found' }]);
+    }
+
+    try {
+      const expense = await Expense.findByIdAndUpdate(id, updatedAttr, { new: true });
+      if (!expense) {
+        return sendFailureResponse(res, [{ msg: 'Expense not found' }]);
+      }
+
+      return sendUpdateResponse(res, expense, 'Expense updated successfully');
+    } catch (error) {
+      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Expense not found'); }
+      console.log('error: ', error);
+      return sendServerErrorResponse(res, error);
     }
   },
 };

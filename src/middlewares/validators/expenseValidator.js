@@ -2,7 +2,9 @@ const { body } = require('express-validator');
 const { validationResponse } = require('./validatorResponse');
 
 const validateExpense = [
-  body('title').notEmpty().withMessage('Expense title can not be empty'),
+  body('title')
+    .notEmpty()
+    .withMessage('Expense title can not be empty'),
   body('amount')
     .notEmpty().withMessage('Amount can not be empty')
     .isNumeric()
