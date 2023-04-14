@@ -12,13 +12,16 @@ const validateToken = (req, res, next) => {
     jwt.verify(bearerToken, process.env.TOKEN_SECRET, async (err, authData) => {
       if (err) {
         console.log(err, 'error in token verify');
+
         return sendAuthErrorResponse(res, 'Not Authorized');
       }
       const user = await User.findById(authData.userId);
+
       if (!user) {
         return sendAuthErrorResponse(res, 'Not Authorized');
       }
       req.user = user;
+
       return next();
     });
   } else {

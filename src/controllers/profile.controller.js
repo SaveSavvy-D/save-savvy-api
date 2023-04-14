@@ -12,6 +12,7 @@ const ProfileController = {
     try {
       const { user } = req;
       const profile = await Profile.findOne({ user: user.id });
+
       if (!profile) {
         return sendNotFoundResponse(res, 'Profile not found');
       }
@@ -27,6 +28,7 @@ const ProfileController = {
       }
 
       console.log('error: ', error);
+
       return sendServerErrorResponse(res, error);
     }
   },
@@ -37,6 +39,7 @@ const ProfileController = {
         name, image, currency, earningDetails,
       } = req.body;
       const profile = await Profile.findOne({ user: user.id });
+
       if (profile) {
         return sendFailureResponse(res, [{ msg: 'Profile already exist' }]);
       }
@@ -56,6 +59,7 @@ const ProfileController = {
       );
     } catch (error) {
       console.log('error: ', error);
+
       return sendServerErrorResponse(res, error);
     }
   },
@@ -66,6 +70,7 @@ const ProfileController = {
       const profile = await Profile.findByIdAndUpdate(id, updateBody, {
         new: true,
       });
+
       if (!profile) {
         return sendNotFoundResponse(res, 'Profile not found');
       }
@@ -77,6 +82,7 @@ const ProfileController = {
       }
 
       console.log('error: ', error);
+
       return sendServerErrorResponse(res, error);
     }
   },

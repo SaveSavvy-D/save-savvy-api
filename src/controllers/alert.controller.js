@@ -1,6 +1,7 @@
 const { Alert, Budget } = require('../models');
 const {
   sendNotFoundResponse, sendSuccessResponse, sendServerErrorResponse, sendDeleteResponse,
+  sendFailureResponse,
 } = require('../utils/response.helper');
 
 const AlertController = {
@@ -8,8 +9,8 @@ const AlertController = {
     try {
       const { user } = req;
       const userBudgets = await Budget.find({ userId: user.id }, '_id');
-      const alerts = await Alert.find({ budget: { $in: userBudgets } });
-      console.log(userBudgets);
+      const alerts = await Alert.find({ budgetId: { $in: userBudgets } });
+
       if (alerts.length === 0) {
         return sendNotFoundResponse(res, 'No alerts found');
       }
@@ -21,14 +22,15 @@ const AlertController = {
       );
     } catch (error) {
       console.log('error: ', error);
+
       return sendServerErrorResponse(res, error);
     }
   },
   getBudgetAlerts: async (req, res) => {
     try {
       const { budgetId } = req.params;
-      const alerts = await Alert.find({ budget: budgetId });
-      console.log(alerts);
+      const alerts = await Alert.find({ budgetId });
+
       if (alerts.length === 0) {
         return sendNotFoundResponse(res, 'No alerts found');
       }
@@ -41,7 +43,33 @@ const AlertController = {
     } catch (error) {
       console.log('error: ', error);
       if (error.kind === 'ObjectId') {
-        return sendNotFoundResponse(res, 'Budget not found');
+        return sendFailureResponse(res, 'Budget not found');
+      }
+
+      return sendServerErrorResponse(res, error);
+    }
+  },
+  getAlert: async (req, res) => {
+    try {
+      console.log('id:');
+      const { id } = req.params;
+      const alert = await Alert.findById(id);
+
+      console.log('id:', id, alert);
+
+      if (!alert) {
+        return sendNotFoundResponse(res, 'Alert not found');
+      }
+
+      return sendSuccessResponse(
+        res,
+        { alert },
+        'Alert fetched successfully',
+      );
+    } catch (error) {
+      console.log('error: ', error);
+      if (error.kind === 'ObjectId') {
+        return sendFailureResponse(res, 'Alert not found');
       }
 
       return sendServerErrorResponse(res, error);
@@ -49,16 +77,23 @@ const AlertController = {
   },
   createBudgetAlerts: async (req, res) => {
     const {
-      title, description, thresholdPercentage, date, budget,
+      title, description, thresholdPercentage, date, budgetId,
     } = req.body;
     const newAlert = {
       title,
       description,
       thresholdPercentage,
       date,
-      budget,
+      budgetId,
     };
+
     try {
+      const budget = await Budget.findById(budgetId);
+
+      if (!budget) {
+        return sendFailureResponse(res, [{ msg: 'Budget not found' }]);
+      }
+
       const alert = await Alert.create(newAlert);
 
       return sendSuccessResponse(
@@ -67,10 +102,7 @@ const AlertController = {
         'Alert created successfully',
       );
     } catch (error) {
-      console.log('error for Obj: ', error);
-      if (error.kind === 'ObjectId') {
-        return sendNotFoundResponse(res, 'Invalid budget id');
-      }
+      console.log('error: ', error);
 
       return sendServerErrorResponse(res, error);
     }
@@ -78,16 +110,23 @@ const AlertController = {
   updateAlert: async (req, res) => {
     const { id } = req.params;
     const updateBody = req.body;
+
     if (updateBody.thresholdPercentage) {
       const thresholdLimit = updateBody.thresholdPercentage.split('%')[0] / 100;
+
       updateBody.thresholdLimit = thresholdLimit;
     }
+
     try {
-      const alert = await Alert.findOneAndUpdate(
+      const updatedAlert = await Alert.findByIdAndUpdate(
         id,
         updateBody,
         { new: true },
       );
+
+      if (!updatedAlert) {
+        return sendNotFoundResponse(res, 'Alert not found');
+      }
 
       return sendSuccessResponse(
         res,
@@ -105,8 +144,14 @@ const AlertController = {
   },
   deleteAlert: async (req, res) => {
     const { id } = req.params;
+
     try {
-      await Alert.findByIdAndDelete(id);
+      const deletedAlert = await Alert.findByIdAndDelete(id);
+
+      if (!deletedAlert) {
+        return sendNotFoundResponse(res, 'Alert not found');
+      }
+
       return sendDeleteResponse(res, 'Alert deleted successfully');
     } catch (error) {
       console.log('error: ', error);

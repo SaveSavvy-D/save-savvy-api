@@ -11,7 +11,6 @@ const validateToken = require('../middlewares/auth/authToken');
 const router = express.Router();
 
 router.use('/auth', UserRouter);
-router.use('/budgets', BudgetRouter);
 router.use('/categories', validateToken, CategoryRouter);
 router.use('/expenses', ExpenseRouter);
 router.use('/profile', validateToken, ProfileRouter);

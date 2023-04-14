@@ -18,12 +18,13 @@ const alertSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
+    default: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
   },
   enabled: {
     type: Boolean,
     default: true,
   },
-  budget: {
+  budgetId: {
     type: ObjectID,
     ref: 'Budget',
     required: true,
@@ -37,7 +38,7 @@ alertSchema
   })
   .set(function setThresholdPercentage(v) {
     const thresholdLimit = v.split('%')[0] / 100;
-    console.log(thresholdLimit);
+
     this.set({ thresholdLimit });
   });
 
