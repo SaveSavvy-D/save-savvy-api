@@ -33,7 +33,7 @@ const seedBudget = async () => {
       }
       const budget = new Budget(budgetAttr);
       await budget.save();
-      console.log('Budget created with id: ', budget.id);
+      console.log(`Budget created: ${budget.id} for [User: ${budget.userId}, Category: ${budget.categoryId}]`);
     } catch (error) {
       console.log(error);
     }

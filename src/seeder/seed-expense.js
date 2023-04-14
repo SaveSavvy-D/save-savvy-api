@@ -15,15 +15,15 @@ const seedExpense = async () => {
   }
   for (let i = 0; i < 10; i++) {
     const expenseAttr = {
-      userId: users[Math.floor(Math.random() * users.length)].id,
-      categoryId: categories[Math.floor(Math.random() * categories.length)].id,
+      user: users[Math.floor(Math.random() * users.length)].id,
+      category: categories[Math.floor(Math.random() * categories.length)].id,
       title: faker.datatype.number(),
       amount: faker.finance.amount(),
     };
     try {
       const expense = new Expense(expenseAttr);
       await expense.save();
-      console.log(`Expense created: ${expense.id} for User: ${expenseAttr.user}, Category: ${expenseAttr.categoryId}`);
+      console.log(`Expense created: ${expense.id} for [ User: ${expenseAttr.user}, Category: ${expenseAttr.category} ]`);
     } catch (error) {
       console.log(error);
     }

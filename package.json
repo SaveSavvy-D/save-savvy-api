@@ -6,10 +6,6 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "seed:user": "node ./src/seeder/seed-user.js",
-    "seed:profile": "node ./src/seeder/seed-profile.js",
-    "seed:budget": "node ./src/seeder/seed-budget.js",
-    "seed:expense": "node ./src/seeder/seed-expense.js",
     "seed": "node ./src/seeder/index.js"
   },
   "repository": {

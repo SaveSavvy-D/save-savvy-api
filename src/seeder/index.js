@@ -4,6 +4,7 @@ const seedUser = require('./seed-user');
 const ConnectDB = require('../configs/database');
 const seedProfile = require('./seed-profile');
 const seedExpense = require('./seed-expense');
+const seedAlert = require('./seed-alert');
 
 const seeder = async () => {
   dotenv.config();
@@ -12,6 +13,7 @@ const seeder = async () => {
   await seedProfile();
   await seedExpense();
   await seedBudget();
+  await seedAlert();
   process.exit(0);
 };
 
