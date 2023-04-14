@@ -14,7 +14,7 @@ const validateToken = require('../middlewares/auth/authToken');
 
 router
   .route('/')
-  .get(getAllExpenses)
+  .get(validateToken, getAllExpenses)
   .post([validateToken, validateExpense], createExpense);
 
 router

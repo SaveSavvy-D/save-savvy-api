@@ -8,7 +8,14 @@ const validateExpense = [
   body('amount')
     .notEmpty().withMessage('Amount can not be empty')
     .isNumeric()
-    .withMessage('Amount must be a number'),
+    .withMessage('Amount must be a number')
+    .custom((value) => {
+      if (parseFloat(value) < 0.0) {
+        throw new Error('Amount must be greater than or equal to 0.0');
+      }
+
+      return true;
+    }),
   body('date')
     .notEmpty().withMessage('Date can not be empty')
     .isDate()
