@@ -5,7 +5,7 @@ const {
 } = require('../utils/response.helper');
 
 const AlertController = {
-  getAllAlerts: async (req, res) => {
+  getMyAlerts: async (req, res) => {
     try {
       const { user } = req;
       const userBudgets = await Budget.find({ userId: user.id }, '_id');
@@ -51,11 +51,8 @@ const AlertController = {
   },
   getAlert: async (req, res) => {
     try {
-      console.log('id:');
       const { id } = req.params;
       const alert = await Alert.findById(id);
-
-      console.log('id:', id, alert);
 
       if (!alert) {
         return sendNotFoundResponse(res, 'Alert not found');
@@ -130,7 +127,7 @@ const AlertController = {
 
       return sendSuccessResponse(
         res,
-        alert,
+        updatedAlert,
         'Alert updated successfully',
       );
     } catch (error) {

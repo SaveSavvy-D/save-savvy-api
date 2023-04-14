@@ -2,17 +2,17 @@ const express = require('express');
 
 const router = express.Router();
 const {
-  getAllAlerts,
+  getMyAlerts,
   getBudgetAlerts,
+  getAlert,
   createBudgetAlerts,
   updateAlert,
   deleteAlert,
-  getAlert,
 } = require('../controllers/alert.controller');
 const { validateAlert } = require('../middlewares/validators/alertValidator');
 
 router.route('/')
-  .get(getAllAlerts)
+  .get(getMyAlerts)
   .post(validateAlert, createBudgetAlerts);
 router.get('/budget/:budgetId', getBudgetAlerts);
 router.route('/:id')
