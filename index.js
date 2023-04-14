@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const ConnectDB = require('./src/configs/database');
 
 const app = express();
+
 app.use(cookieParser());
 dotenv.config();
 ConnectDB();

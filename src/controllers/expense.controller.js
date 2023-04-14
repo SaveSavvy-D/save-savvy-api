@@ -15,6 +15,7 @@ const ExpenseController = {
     } = req.body;
 
     const category = await Category.findById(categoryId);
+
     if (!category) {
       return sendFailureResponse(res, [{ msg: 'Category not found' }]);
     }
@@ -39,6 +40,7 @@ const ExpenseController = {
       );
     } catch (err) {
       console.error(err.message);
+
       return sendServerErrorResponse(res, err.message);
     }
   },
@@ -88,12 +90,15 @@ const ExpenseController = {
   deleteExpense: async (req, res) => {
     try {
       const deletedExpense = await Expense.findOneAndRemove({ _id: req.params.id });
+
       if (!deletedExpense) {
         return sendNotFoundResponse(res, 'Expense not found');
       }
+
       return sendDeleteResponse(res, 'Expense deleted');
     } catch (error) {
       if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Expense not found'); }
+
       return sendServerErrorResponse(res, error);
     }
   },
@@ -109,12 +114,14 @@ const ExpenseController = {
     };
 
     const category = await Category.findById(categoryId);
+
     if (!category) {
       return sendFailureResponse(res, [{ msg: 'Category not found' }]);
     }
 
     try {
       const expense = await Expense.findByIdAndUpdate(id, updatedAttr, { new: true });
+
       if (!expense) {
         return sendFailureResponse(res, [{ msg: 'Expense not found' }]);
       }
@@ -123,6 +130,7 @@ const ExpenseController = {
     } catch (error) {
       if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Expense not found'); }
       console.log('error: ', error);
+
       return sendServerErrorResponse(res, error);
     }
   },

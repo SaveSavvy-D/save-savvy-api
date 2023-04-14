@@ -26,8 +26,10 @@ const validateExpense = [
         if (!/^https?:\/\/.*\/.*\.(png|webp|jpeg|jpg)\??.*$/gim.test(image)) {
           throw new Error(`Invalid image file type for image ${image}`);
         }
+
         return image;
       });
+
       return true;
     })
     .withMessage('Invalid image'),
