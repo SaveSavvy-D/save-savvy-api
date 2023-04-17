@@ -1,6 +1,10 @@
+/* eslint-disable no-underscore-dangle */
 const { Alert, Budget } = require('../models');
 const {
-  sendNotFoundResponse, sendSuccessResponse, sendServerErrorResponse, sendDeleteResponse,
+  sendNotFoundResponse,
+  sendSuccessResponse,
+  sendServerErrorResponse,
+  sendDeleteResponse,
   sendFailureResponse,
 } = require('../utils/response.helper');
 
@@ -29,7 +33,11 @@ const AlertController = {
   getBudgetAlerts: async (req, res) => {
     try {
       const { budgetId } = req.params;
-      const alerts = await Alert.find({ budgetId });
+      const userId = req.user.id;
+      const alerts = await Alert.find({
+        budgetId,
+        'budgetId.userId': userId,
+      });
 
       if (alerts.length === 0) {
         return sendNotFoundResponse(res, 'No alerts found');
@@ -52,17 +60,17 @@ const AlertController = {
   getAlert: async (req, res) => {
     try {
       const { id } = req.params;
-      const alert = await Alert.findById(id);
+      const alert = await Alert.findOne({ _id: id }).populate({
+        path: 'budgetId',
+        match: { userId: req.user.id },
+        select: '_id',
+      });
 
-      if (!alert) {
+      if (!alert || !alert?.budgetId) {
         return sendNotFoundResponse(res, 'Alert not found');
       }
 
-      return sendSuccessResponse(
-        res,
-        { alert },
-        'Alert fetched successfully',
-      );
+      return sendSuccessResponse(res, { alert }, 'Alert fetched successfully');
     } catch (error) {
       console.log('error: ', error);
       if (error.kind === 'ObjectId') {
@@ -85,7 +93,10 @@ const AlertController = {
     };
 
     try {
-      const budget = await Budget.findById(budgetId);
+      const budget = await Budget.findOne({
+        _id: budgetId,
+        userId: req.user.id,
+      });
 
       if (!budget) {
         return sendFailureResponse(res, [{ msg: 'Budget not found' }]);
@@ -93,11 +104,7 @@ const AlertController = {
 
       const alert = await Alert.create(newAlert);
 
-      return sendSuccessResponse(
-        res,
-        alert,
-        'Alert created successfully',
-      );
+      return sendSuccessResponse(res, alert, 'Alert created successfully');
     } catch (error) {
       console.log('error: ', error);
 
@@ -115,6 +122,16 @@ const AlertController = {
     }
 
     try {
+      const alert = await Alert.findOne({ _id: id }).populate({
+        path: 'budgetId',
+        match: { userId: req.user.id },
+        select: '_id',
+      });
+
+      if (!alert || !alert?.budgetId) {
+        return sendNotFoundResponse(res, 'Alert not found');
+      }
+
       const updatedAlert = await Alert.findByIdAndUpdate(
         id,
         updateBody,
@@ -143,7 +160,19 @@ const AlertController = {
     const { id } = req.params;
 
     try {
-      const deletedAlert = await Alert.findByIdAndDelete(id);
+      const alert = await Alert.findOne({ _id: id }).populate({
+        path: 'budgetId',
+        match: { userId: req.user.id },
+        select: '_id',
+      });
+
+      if (!alert || !alert?.budgetId) {
+        return sendNotFoundResponse(res, 'Alert not found');
+      }
+
+      const deletedAlert = await Alert.findOneAndDelete({
+        _id: id,
+      });
 
       if (!deletedAlert) {
         return sendNotFoundResponse(res, 'Alert not found');
