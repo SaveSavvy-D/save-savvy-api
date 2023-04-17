@@ -1,17 +1,25 @@
 const express = require('express');
 
 const router = express.Router();
-// const auth = require('../../middleware/auth');
-// const Profile = require('../../models/profile');
-// const User = require('../../models/user');
-// const auth = require('../middlewares/authToken');
-// const { check, validationResult } = require('express-validator/check');
 
-// @route   GET api/expenses/index
-// @desc    Get current users profile
-// @access  Private
-router.post('/', async (req, res) => {
-  res.send('Expenses running');
-});
+const {
+  createExpense,
+  deleteExpense,
+  getExpenseByUserId,
+  updateExpense,
+} = require('../controllers/expense.controller');
+const { validateExpense } = require('../middlewares/validators/expenseValidator');
+const validateToken = require('../middlewares/auth/authToken');
+
+router
+  .route('/')
+  .post([validateToken, validateExpense], createExpense);
+
+router
+  .route('/:id')
+  .patch([validateToken, validateExpense], updateExpense)
+  .delete(validateToken, deleteExpense);
+
+router.get('/my', validateToken, getExpenseByUserId);
 
 module.exports = router;

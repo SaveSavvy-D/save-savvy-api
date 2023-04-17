@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const ConnectDB = require('./src/configs/database');
 
 const app = express();
+
 app.use(cookieParser());
 dotenv.config();
 ConnectDB();
@@ -14,10 +15,6 @@ app.use(morgan('tiny'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: process.env.APP_URL || '' }));
-
-app.get('/', (req, res) => {
-  res.send('Api Running...');
-});
 
 const indexRoute = require('./src/routes/index');
 

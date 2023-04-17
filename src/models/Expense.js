@@ -5,11 +5,11 @@ const ObjectID = mongoose.Schema.Types.ObjectId;
 const ExpenseSchema = new mongoose.Schema({
   user: {
     type: ObjectID,
-    ref: 'user',
+    ref: 'User',
   },
   category: {
     type: ObjectID,
-    ref: 'category',
+    ref: 'Category',
   },
   title: {
     type: String,
@@ -29,6 +29,7 @@ const ExpenseSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
+    required: true,
   },
 });
 

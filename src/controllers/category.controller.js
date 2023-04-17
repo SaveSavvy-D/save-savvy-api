@@ -1,5 +1,4 @@
 const { Category } = require('../models/index');
-
 const {
   sendSuccessResponse,
   sendFailureResponse,
@@ -26,6 +25,7 @@ const CategoryController = {
       );
     } catch (err) {
       console.error(err.message);
+
       return sendServerErrorResponse(res, err.message);
     }
   },
