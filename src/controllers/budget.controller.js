@@ -170,7 +170,7 @@ const BudgetController = {
         { new: true },
       );
 
-      return sendUpdateResponse(res, budget, 'Budget updated successfully');
+      return sendUpdateResponse(res, { budget }, 'Budget updated successfully');
     } catch (error) {
       if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Budget not found'); }
       console.log('error: ', error);

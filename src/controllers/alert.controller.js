@@ -66,7 +66,7 @@ const AlertController = {
         select: '_id',
       });
 
-      if (!alert || !alert?.budgetId) {
+      if (!alert?.budgetId) {
         return sendNotFoundResponse(res, 'Alert not found');
       }
 
@@ -128,7 +128,7 @@ const AlertController = {
         select: '_id',
       });
 
-      if (!alert || !alert?.budgetId) {
+      if (!alert?.budgetId) {
         return sendNotFoundResponse(res, 'Alert not found');
       }
 
@@ -166,7 +166,7 @@ const AlertController = {
         select: '_id',
       });
 
-      if (!alert || !alert?.budgetId) {
+      if (!alert?.budgetId) {
         return sendNotFoundResponse(res, 'Alert not found');
       }
 

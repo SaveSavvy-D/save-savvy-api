@@ -20,7 +20,7 @@ const CategoryController = {
 
       return sendSuccessResponse(
         res,
-        category,
+        { category },
         'Category created successfully',
       );
     } catch (err) {
@@ -38,7 +38,7 @@ const CategoryController = {
         return sendFailureResponse(res, [{ msg: 'Category not found' }]);
       }
 
-      return sendSuccessResponse(res, category);
+      return sendSuccessResponse(res, { category });
     } catch (err) {
       console.error(err.message);
 
@@ -58,7 +58,7 @@ const CategoryController = {
         return sendFailureResponse(res, [{ msg: 'Categories not found' }]);
       }
 
-      return sendSuccessResponse(res, categories);
+      return sendSuccessResponse(res, { categories });
     } catch (err) {
       console.error(err.message);
 

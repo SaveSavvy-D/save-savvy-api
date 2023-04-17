@@ -17,7 +17,7 @@ const ExpenseController = {
         return sendFailureResponse(res, [{ msg: 'Expenses not found' }]);
       }
 
-      return sendSuccessResponse(res, expenses);
+      return sendSuccessResponse(res, { expenses });
     } catch (err) {
       console.error(err.message);
 
@@ -35,7 +35,7 @@ const ExpenseController = {
         return sendFailureResponse(res, [{ msg: 'Expenses not found for current user' }]);
       }
 
-      return sendSuccessResponse(res, expenses);
+      return sendSuccessResponse(res, { expenses });
     } catch (err) {
       console.error(err.message);
 
@@ -106,7 +106,7 @@ const ExpenseController = {
         return sendFailureResponse(res, [{ msg: 'Expense not found' }]);
       }
 
-      return sendUpdateResponse(res, expense, 'Expense updated successfully');
+      return sendUpdateResponse(res, { expense }, 'Expense updated successfully');
     } catch (error) {
       if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Expense not found'); }
       console.log('error: ', error);
