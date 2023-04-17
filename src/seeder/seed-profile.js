@@ -12,13 +12,16 @@ const seedProfile = async () => {
       }],
       user: users[Math.floor(Math.random() * users.length)].id,
     };
+
     try {
       const findProfile = await Profile.findOne({ user: profileAttr.user });
+
       if (findProfile) {
         console.log('Profile already exsist for this user');
         continue;
       }
       const profile = new Profile(profileAttr);
+
       await profile.save();
       console.log(`Profile created: ${profile.id} for [ User: ${profile.user}`);
     } catch (error) {

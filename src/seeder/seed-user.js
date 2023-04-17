@@ -7,13 +7,16 @@ const seedUser = async () => {
       email: faker.internet.email(),
       password: faker.internet.password(),
     };
+
     try {
       const findUser = await User.findOne({ email: userAttr.email });
+
       if (findUser) {
         console.log('User already exsists with this email');
         continue;
       }
       const user = new User(userAttr);
+
       await user.save();
       console.log(`New user added with id: ${user.id}`);
     } catch (error) {
@@ -21,4 +24,5 @@ const seedUser = async () => {
     }
   }
 };
+
 module.exports = seedUser;
