@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+
 const { hashpassword, comparePassword } = require('../utils/user.helper');
-const { Profile, User } = require('../models/index');
+const { Profile, User } = require('../models');
 const {
   sendSuccessResponse,
   sendFailureResponse,
@@ -12,6 +13,7 @@ const UserController = {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ email });
+
       if (!user || !(await comparePassword(password, user.password))) {
         return sendFailureResponse(res, [{ msg: 'Invalid email or password' }]);
       }
@@ -23,6 +25,7 @@ const UserController = {
       return sendSuccessResponse(res, { token }, 'User logged in successfully');
     } catch (error) {
       console.log('error: ', error);
+
       return sendServerErrorResponse(res, error);
     }
   },
@@ -31,6 +34,7 @@ const UserController = {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ email });
+
       if (user) {
         return sendFailureResponse(res, [{ msg: 'User already exist' }]);
       }
@@ -51,6 +55,7 @@ const UserController = {
       );
     } catch (error) {
       console.log('error: ', error);
+
       return sendServerErrorResponse(res, error);
     }
   },
@@ -59,6 +64,7 @@ const UserController = {
       const { id } = req.user;
       const deletedUser = await User.findByIdAndDelete(id);
       const deletedProfile = await Profile.findOneAndDelete({ user: id });
+
       if (!deletedProfile) {
         return sendSuccessResponse(
           res,
@@ -74,6 +80,7 @@ const UserController = {
       );
     } catch (error) {
       console.log('error: ', error);
+
       return sendServerErrorResponse(res, error);
     }
   },
