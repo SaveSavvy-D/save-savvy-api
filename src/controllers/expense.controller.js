@@ -47,23 +47,24 @@ const ExpenseController = {
     const {
       title, amount, description, images, date, categoryId,
     } = req.body;
-    const category = await Category.findById(categoryId);
-
-    if (!category) {
-      return sendFailureResponse(res, [{ msg: 'Category not found' }]);
-    }
-
-    const newExpense = {
-      title,
-      amount: parseFloat(amount),
-      description,
-      images,
-      date: new Date(date),
-      user: req.user.id,
-      category: categoryId,
-    };
 
     try {
+      const category = await Category.findById(categoryId);
+
+      if (!category) {
+        return sendFailureResponse(res, [{ msg: 'Category not found' }]);
+      }
+
+      const newExpense = {
+        title,
+        amount: parseFloat(amount),
+        description,
+        images,
+        date: new Date(date),
+        user: req.user.id,
+        category: categoryId,
+      };
+
       const expense = await Expense.create(newExpense);
 
       return sendSuccessResponse(
@@ -88,13 +89,13 @@ const ExpenseController = {
       title, amount, description, images, date, category: categoryId, user: req.user.id,
     };
 
-    const category = await Category.findById(categoryId);
-
-    if (!category) {
-      return sendFailureResponse(res, [{ msg: 'Category not found' }]);
-    }
-
     try {
+      const category = await Category.findById(categoryId);
+
+      if (!category) {
+        return sendFailureResponse(res, [{ msg: 'Category not found' }]);
+      }
+
       const expense = await Expense.findByIdAndUpdate(id, updatedAttr, { new: true });
 
       if (!expense) {

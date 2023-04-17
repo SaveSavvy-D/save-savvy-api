@@ -4,7 +4,6 @@ const router = express.Router();
 
 const {
   createExpense,
-  getAllExpenses,
   deleteExpense,
   getExpenseByUserId,
   updateExpense,
@@ -14,7 +13,6 @@ const validateToken = require('../middlewares/auth/authToken');
 
 router
   .route('/')
-  .get(validateToken, getAllExpenses)
   .post([validateToken, validateExpense], createExpense);
 
 router
