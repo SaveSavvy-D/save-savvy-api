@@ -19,7 +19,7 @@ const seedExpense = async () => {
     const expenseAttr = {
       user: users[Math.floor(Math.random() * users.length)].id,
       category: categories[Math.floor(Math.random() * categories.length)].id,
-      title: faker.datatype.number(),
+      title: faker.lorem.word(),
       amount: faker.finance.amount(),
     };
 
