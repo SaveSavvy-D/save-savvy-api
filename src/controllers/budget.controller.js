@@ -25,9 +25,9 @@ const BudgetController = {
   },
   getMyBudgets: async (req, res) => {
     try {
-      const budgets = await Budget.find({
-        userId: req.user.id,
-      });
+      const budgets = await Budget.find({ userId: req.user.id })
+        .populate('userId', 'email')
+        .populate('categoryId', 'title');
 
       if (budgets.length === 0) return sendNotFoundResponse(res, 'No budget found');
 
