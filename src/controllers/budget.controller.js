@@ -44,16 +44,20 @@ const BudgetController = {
   },
   getBudgetById: async (req, res) => {
     const { id } = req.params;
+    const userId = req.user.id;
 
     try {
-      const budget = await Budget.findById(id);
+      const budget = await Budget.find({
+        _id: id,
+        userId,
+      });
 
       if (!budget) return sendNotFoundResponse(res, 'Budget not found');
 
       return sendSuccessResponse(
         res,
         { budget },
-        'Budgets fetched successfully',
+        'Budget fetched successfully',
       );
     } catch (error) {
       if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Budget not found'); }
@@ -85,10 +89,12 @@ const BudgetController = {
   },
   getBudgetByCategoryId: async (req, res) => {
     const { categoryId } = req.params;
+    const userId = req.user.id;
 
     try {
       const budgets = await Budget.find({
         categoryId,
+        userId,
       });
 
       if (budgets.length === 0) return sendNotFoundResponse(res, 'No budget found');
@@ -99,7 +105,7 @@ const BudgetController = {
         'Budgets fetched successfully',
       );
     } catch (error) {
-      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Budget not found'); }
+      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Category not found'); }
       console.log('error: ', error);
 
       return sendServerErrorResponse(res, error);
@@ -137,6 +143,7 @@ const BudgetController = {
     const {
       startDate, endDate, threshold, categoryId,
     } = req.body;
+    const userId = req.user.id;
     let updatedAttr = {};
 
     if (startDate) updatedAttr.startDate = startDate;
@@ -157,19 +164,13 @@ const BudgetController = {
       categoryId,
     };
     try {
-      let budget = await Budget.findById(id);
+      const budget = await Budget.findOneAndUpdate(
+        { _id: id, userId },
+        { $set: updatedAttr },
+        { new: true },
+      );
 
-      if (budget) {
-        budget = await Budget.findOneAndUpdate(
-          { id },
-          { $set: updatedAttr },
-          { new: true },
-        );
-
-        return sendUpdateResponse(res, budget, 'Budget updated successfully');
-      }
-
-      return sendNotFoundResponse(res, 'Budget not found');
+      return sendUpdateResponse(res, { budget }, 'Budget updated successfully');
     } catch (error) {
       if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Budget not found'); }
       console.log('error: ', error);
@@ -179,9 +180,14 @@ const BudgetController = {
   },
   deleteBudget: async (req, res) => {
     const { id } = req.params;
+    const userId = req.user.id;
 
     try {
-      await Budget.findOneAndRemove({ _id: id });
+      const deletedBudget = await Budget.findOneAndDelete({ _id: id, userId });
+
+      if (!deletedBudget) {
+        return sendNotFoundResponse(res, 'Budget not found');
+      }
 
       return sendDeleteResponse(res, 'Budget deleted');
     } catch (error) {

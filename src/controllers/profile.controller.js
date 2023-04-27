@@ -67,15 +67,17 @@ const ProfileController = {
     try {
       const { id } = req.params;
       const updateBody = req.body;
-      const profile = await Profile.findByIdAndUpdate(id, updateBody, {
-        new: true,
-      });
+      const profile = await Profile.findOneAndUpdate(
+        { _id: id, user: req.user.id },
+        updateBody,
+        { new: true },
+      );
 
       if (!profile) {
         return sendNotFoundResponse(res, 'Profile not found');
       }
 
-      return sendUpdateResponse(res, profile, 'Profile updated successfully');
+      return sendUpdateResponse(res, { profile }, 'Profile updated successfully');
     } catch (error) {
       if (error.kind === 'ObjectId') {
         return sendNotFoundResponse(res, 'Profile not found');

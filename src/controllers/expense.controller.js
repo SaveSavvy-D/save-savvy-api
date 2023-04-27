@@ -17,7 +17,7 @@ const ExpenseController = {
         return sendFailureResponse(res, [{ msg: 'Expenses not found' }]);
       }
 
-      return sendSuccessResponse(res, expenses);
+      return sendSuccessResponse(res, { expenses });
     } catch (err) {
       console.error(err.message);
 
@@ -35,7 +35,7 @@ const ExpenseController = {
         return sendFailureResponse(res, [{ msg: 'Expenses not found for current user' }]);
       }
 
-      return sendSuccessResponse(res, expenses);
+      return sendSuccessResponse(res, { expenses });
     } catch (err) {
       console.error(err.message);
 
@@ -84,7 +84,7 @@ const ExpenseController = {
     const {
       title, amount, description, images, date, categoryId,
     } = req.body;
-
+    const userId = req.user.id;
     const updatedAttr = {
       title, amount, description, images, date, category: categoryId, user: req.user.id,
     };
@@ -96,13 +96,17 @@ const ExpenseController = {
         return sendFailureResponse(res, [{ msg: 'Category not found' }]);
       }
 
-      const expense = await Expense.findByIdAndUpdate(id, updatedAttr, { new: true });
+      const expense = await Expense.findOneAndUpdate(
+        { _id: id, user: userId },
+        updatedAttr,
+        { new: true },
+      );
 
       if (!expense) {
         return sendFailureResponse(res, [{ msg: 'Expense not found' }]);
       }
 
-      return sendUpdateResponse(res, expense, 'Expense updated successfully');
+      return sendUpdateResponse(res, { expense }, 'Expense updated successfully');
     } catch (error) {
       if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Expense not found'); }
       console.log('error: ', error);
@@ -113,7 +117,11 @@ const ExpenseController = {
 
   deleteExpense: async (req, res) => {
     try {
-      const deletedExpense = await Expense.findOneAndRemove({ _id: req.params.id });
+      const { id } = req.params;
+      const deletedExpense = await Expense.findOneAndDelete({
+        _id: id,
+        user: req.user.id,
+      });
 
       if (!deletedExpense) {
         return sendNotFoundResponse(res, 'Expense not found');
