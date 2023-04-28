@@ -7,6 +7,8 @@ const {
   sendDeleteResponse,
 } = require('../utils/response.helper');
 
+const FETCH_LIMIT = 5;
+
 const BudgetController = {
   getAllBudgets: async (req, res) => {
     try {
@@ -25,7 +27,11 @@ const BudgetController = {
   },
   getMyBudgets: async (req, res) => {
     try {
+      const skip = FETCH_LIMIT * (parseInt(req.query.page) - 1);
       const budgets = await Budget.find({ userId: req.user.id })
+        .sort({ startDate: -1 })
+        .skip(skip)
+        .limit(FETCH_LIMIT)
         .populate('userId', 'email')
         .populate('categoryId', 'title');
 
