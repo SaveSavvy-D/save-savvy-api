@@ -35,11 +35,14 @@ const BudgetController = {
         .populate('userId', 'email')
         .populate('categoryId', 'title');
 
+      const count = await Budget.countDocuments({ userId: req.user.id });
+      const remainingRecords = count - (skip + FETCH_LIMIT);
+
       if (budgets.length === 0) return sendNotFoundResponse(res, 'No budget found');
 
       return sendSuccessResponse(
         res,
-        { budgets },
+        { budgets, remainingRecords },
         'Budgets fetched successfully',
       );
     } catch (error) {

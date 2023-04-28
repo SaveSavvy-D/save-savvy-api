@@ -37,11 +37,18 @@ const ExpenseController = {
         .populate('user', 'email')
         .populate('category', 'title');
 
+      const count = await Expense.countDocuments({ user: req.user.id });
+      const remainingRecords = count - (skip + FETCH_LIMIT);
+
       if (expenses.length === 0) {
         return sendFailureResponse(res, [{ msg: 'Expenses not found for current user' }]);
       }
 
-      return sendSuccessResponse(res, { expenses });
+      return sendSuccessResponse(
+        res,
+        { expenses, remainingRecords },
+        'Expenses fetched successfully',
+      );
     } catch (err) {
       console.error(err.message);
 
