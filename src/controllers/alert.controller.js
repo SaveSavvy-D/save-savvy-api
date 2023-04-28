@@ -21,13 +21,16 @@ const AlertController = {
         .skip(skip)
         .limit(FETCH_LIMIT);
 
+      const count = await Alert.find({ budgetId: { $in: userBudgets } }).count();
+      const remainingRecords = count - (skip + FETCH_LIMIT);
+
       if (alerts.length === 0) {
         return sendNotFoundResponse(res, 'No alerts found');
       }
 
       return sendSuccessResponse(
         res,
-        { alerts },
+        { alerts, remainingRecords },
         'Alerts fetched successfully',
       );
     } catch (error) {
