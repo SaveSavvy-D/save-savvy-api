@@ -8,6 +8,8 @@ const {
   sendUpdateResponse,
 } = require('../utils/response.helper');
 
+const FETCH_LIMIT = 5;
+
 const ExpenseController = {
   getAllExpenses: async (req, res) => {
     try {
@@ -27,7 +29,11 @@ const ExpenseController = {
 
   getExpenseByUserId: async (req, res) => {
     try {
+      const skip = FETCH_LIMIT * (parseInt(req.query.page) - 1);
       const expenses = await Expense.find({ user: req.user.id })
+        .sort({ date: -1 })
+        .skip(skip)
+        .limit(FETCH_LIMIT)
         .populate('user', 'email')
         .populate('category', 'title');
 
