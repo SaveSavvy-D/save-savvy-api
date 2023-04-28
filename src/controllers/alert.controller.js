@@ -8,12 +8,18 @@ const {
   sendFailureResponse,
 } = require('../utils/response.helper');
 
+const FETCH_LIMIT = 5;
+
 const AlertController = {
   getMyAlerts: async (req, res) => {
     try {
       const { user } = req;
+      const skip = FETCH_LIMIT * (parseInt(req.query.page) - 1);
       const userBudgets = await Budget.find({ userId: user.id }, '_id');
-      const alerts = await Alert.find({ budgetId: { $in: userBudgets } });
+      const alerts = await Alert.find({ budgetId: { $in: userBudgets } })
+        .sort({ date: -1 })
+        .skip(skip)
+        .limit(FETCH_LIMIT);
 
       if (alerts.length === 0) {
         return sendNotFoundResponse(res, 'No alerts found');
