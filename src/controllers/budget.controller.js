@@ -1,4 +1,4 @@
-const { Budget } = require('../models');
+const { Budget, Category } = require('../models');
 const {
   sendSuccessResponse,
   sendServerErrorResponse,
@@ -35,14 +35,20 @@ const BudgetController = {
         .populate('userId', 'email')
         .populate('categoryId', 'title');
 
+      if (budgets.length === 0) return sendNotFoundResponse(res, [{ msg: 'Budgets not found' }]);
+
+      const categories = await Category.find();
+
+      if (categories.length === 0) {
+        return sendNotFoundResponse(res, [{ msg: 'Categories not found' }]);
+      }
+
       const count = await Budget.countDocuments({ userId: req.user.id });
       const remainingRecords = count - (skip + FETCH_LIMIT);
 
-      if (budgets.length === 0) return sendNotFoundResponse(res, 'No budget found');
-
       return sendSuccessResponse(
         res,
-        { budgets, remainingRecords },
+        { budgets, categories, remainingRecords },
         'Budgets fetched successfully',
       );
     } catch (error) {
