@@ -31,7 +31,7 @@ const ExpenseController = {
     try {
       const skip = FETCH_LIMIT * (parseInt(req.query.page) - 1);
       const expenses = await Expense.find({ user: req.user.id })
-        .sort({ date: -1 })
+        .sort({ date: -1, _id: -1 })
         .skip(skip)
         .limit(FETCH_LIMIT)
         .populate('user', 'email')

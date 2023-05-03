@@ -29,7 +29,7 @@ const BudgetController = {
     try {
       const skip = FETCH_LIMIT * (parseInt(req.query.page) - 1);
       const budgets = await Budget.find({ userId: req.user.id })
-        .sort({ startDate: -1 })
+        .sort({ startDate: -1, _id: -1 })
         .skip(skip)
         .limit(FETCH_LIMIT)
         .populate('userId', 'email')

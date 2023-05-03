@@ -17,7 +17,7 @@ const AlertController = {
       const skip = FETCH_LIMIT * (parseInt(req.query.page) - 1);
       const userBudgets = await Budget.find({ userId: user.id }, '_id');
       const alerts = await Alert.find({ budgetId: { $in: userBudgets } })
-        .sort({ date: -1 })
+        .sort({ date: -1, _id: -1 })
         .skip(skip)
         .limit(FETCH_LIMIT);
 
