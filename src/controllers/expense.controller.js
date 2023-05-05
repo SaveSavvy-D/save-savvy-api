@@ -2,11 +2,10 @@ const { Expense, Category } = require('../models/index');
 const {
   sendSuccessResponse,
   sendFailureResponse,
-  sendServerErrorResponse,
   sendDeleteResponse,
-  sendNotFoundResponse,
   sendUpdateResponse,
 } = require('../utils/response.helper');
+const { serverResponse, notFoundResponse } = require('../middlewares/validators/validatorResponse');
 
 const FETCH_LIMIT = 5;
 
@@ -20,10 +19,10 @@ const ExpenseController = {
       }
 
       return sendSuccessResponse(res, { expenses });
-    } catch (err) {
-      console.error(err.message);
+    } catch (error) {
+      console.error(error.message);
 
-      return sendServerErrorResponse(res, err.message);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 
@@ -49,10 +48,10 @@ const ExpenseController = {
         { expenses, remainingRecords },
         'Expenses fetched successfully',
       );
-    } catch (err) {
-      console.error(err.message);
+    } catch (error) {
+      console.error(error.message);
 
-      return sendServerErrorResponse(res, err.message);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 
@@ -85,10 +84,10 @@ const ExpenseController = {
         { expense },
         'Expense created successfully',
       );
-    } catch (err) {
-      console.error(err.message);
+    } catch (error) {
+      console.error(error.message);
 
-      return sendServerErrorResponse(res, err.message);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 
@@ -121,10 +120,10 @@ const ExpenseController = {
 
       return sendUpdateResponse(res, { expense }, 'Expense updated successfully');
     } catch (error) {
-      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Expense not found'); }
+      if (error.kind === 'ObjectId') { return notFoundResponse(res, 'Expense not found'); }
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 
@@ -137,14 +136,14 @@ const ExpenseController = {
       });
 
       if (!deletedExpense) {
-        return sendNotFoundResponse(res, 'Expense not found');
+        return notFoundResponse(res, 'Expense not found');
       }
 
       return sendDeleteResponse(res, 'Expense deleted');
     } catch (error) {
-      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Expense not found'); }
+      if (error.kind === 'ObjectId') { return notFoundResponse(res, 'Expense not found'); }
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 };

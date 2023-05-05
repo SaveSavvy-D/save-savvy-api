@@ -1,12 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 const { Alert, Budget } = require('../models');
 const {
-  sendNotFoundResponse,
   sendSuccessResponse,
-  sendServerErrorResponse,
   sendDeleteResponse,
   sendFailureResponse,
 } = require('../utils/response.helper');
+const { serverResponse, notFoundResponse } = require('../middlewares/validators/validatorResponse');
 
 const FETCH_LIMIT = 5;
 
@@ -25,7 +24,7 @@ const AlertController = {
       const remainingRecords = count - (skip + FETCH_LIMIT);
 
       if (alerts.length === 0) {
-        return sendNotFoundResponse(res, 'No alerts found');
+        return notFoundResponse(res, 'No alerts found');
       }
 
       return sendSuccessResponse(
@@ -36,7 +35,7 @@ const AlertController = {
     } catch (error) {
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   getBudgetAlerts: async (req, res) => {
@@ -49,7 +48,7 @@ const AlertController = {
       });
 
       if (alerts.length === 0) {
-        return sendNotFoundResponse(res, 'No alerts found');
+        return notFoundResponse(res, 'No alerts found');
       }
 
       return sendSuccessResponse(
@@ -63,7 +62,7 @@ const AlertController = {
         return sendFailureResponse(res, 'Budget not found');
       }
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   getAlert: async (req, res) => {
@@ -76,7 +75,7 @@ const AlertController = {
       });
 
       if (!alert?.budgetId) {
-        return sendNotFoundResponse(res, 'Alert not found');
+        return notFoundResponse(res, 'Alert not found');
       }
 
       return sendSuccessResponse(res, { alert }, 'Alert fetched successfully');
@@ -86,7 +85,7 @@ const AlertController = {
         return sendFailureResponse(res, 'Alert not found');
       }
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   createBudgetAlerts: async (req, res) => {
@@ -117,7 +116,7 @@ const AlertController = {
     } catch (error) {
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   updateAlert: async (req, res) => {
@@ -138,7 +137,7 @@ const AlertController = {
       });
 
       if (!alert?.budgetId) {
-        return sendNotFoundResponse(res, 'Alert not found');
+        return notFoundResponse(res, 'Alert not found');
       }
 
       const updatedAlert = await Alert.findByIdAndUpdate(
@@ -148,7 +147,7 @@ const AlertController = {
       );
 
       if (!updatedAlert) {
-        return sendNotFoundResponse(res, 'Alert not found');
+        return notFoundResponse(res, 'Alert not found');
       }
 
       return sendSuccessResponse(
@@ -159,10 +158,10 @@ const AlertController = {
     } catch (error) {
       console.log('error: ', error);
       if (error.kind === 'ObjectId') {
-        return sendNotFoundResponse(res, 'Alert not found');
+        return notFoundResponse(res, 'Alert not found');
       }
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   deleteAlert: async (req, res) => {
@@ -176,7 +175,7 @@ const AlertController = {
       });
 
       if (!alert?.budgetId) {
-        return sendNotFoundResponse(res, 'Alert not found');
+        return notFoundResponse(res, 'Alert not found');
       }
 
       const deletedAlert = await Alert.findOneAndDelete({
@@ -184,17 +183,17 @@ const AlertController = {
       });
 
       if (!deletedAlert) {
-        return sendNotFoundResponse(res, 'Alert not found');
+        return notFoundResponse(res, 'Alert not found');
       }
 
       return sendDeleteResponse(res, 'Alert deleted successfully');
     } catch (error) {
       console.log('error: ', error);
       if (error.kind === 'ObjectId') {
-        return sendNotFoundResponse(res, 'Alert not found');
+        return notFoundResponse(res, 'Alert not found');
       }
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 };

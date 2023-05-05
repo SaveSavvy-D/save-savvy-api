@@ -1,11 +1,10 @@
 const { Profile } = require('../models');
 const {
   sendSuccessResponse,
-  sendServerErrorResponse,
-  sendNotFoundResponse,
   sendFailureResponse,
   sendUpdateResponse,
 } = require('../utils/response.helper');
+const { serverResponse, notFoundResponse } = require('../middlewares/validators/validatorResponse');
 
 const ProfileController = {
   getProfile: async (req, res) => {
@@ -14,7 +13,7 @@ const ProfileController = {
       const profile = await Profile.findOne({ user: user.id });
 
       if (!profile) {
-        return sendNotFoundResponse(res, 'Profile not found');
+        return notFoundResponse(res, 'Profile not found');
       }
 
       return sendSuccessResponse(
@@ -24,12 +23,12 @@ const ProfileController = {
       );
     } catch (error) {
       if (error.kind === 'ObjectId') {
-        return sendNotFoundResponse(res, 'Profile not found');
+        return notFoundResponse(res, 'Profile not found');
       }
 
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   createProfile: async (req, res) => {
@@ -60,7 +59,7 @@ const ProfileController = {
     } catch (error) {
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   updateProfile: async (req, res) => {
@@ -74,18 +73,18 @@ const ProfileController = {
       );
 
       if (!profile) {
-        return sendNotFoundResponse(res, 'Profile not found');
+        return notFoundResponse(res, 'Profile not found');
       }
 
       return sendUpdateResponse(res, { profile }, 'Profile updated successfully');
     } catch (error) {
       if (error.kind === 'ObjectId') {
-        return sendNotFoundResponse(res, 'Profile not found');
+        return notFoundResponse(res, 'Profile not found');
       }
 
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 };

@@ -33,28 +33,27 @@ const sendFailureResponse = (res, errors) => {
   });
 };
 
-const sendNotFoundResponse = (res, message) => {
+const sendNotFoundResponse = (res, errors) => {
   res.status(404).json({
     type: 'notFound',
     status: false,
-    message,
+    errors,
   });
 };
 
-const sendServerErrorResponse = (res, error) => {
+const sendServerErrorResponse = (res, errors) => {
   res.status(500).json({
     type: 'error',
     status: false,
-    message: 'Internal Server Error',
-    error,
+    errors,
   });
 };
 
-const sendAuthErrorResponse = (res, message) => {
+const sendAuthErrorResponse = (res, errors) => {
   res.status(401).json({
     type: 'failed',
     status: false,
-    message,
+    errors,
   });
 };
 
