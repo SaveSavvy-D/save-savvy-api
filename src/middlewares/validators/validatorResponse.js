@@ -1,5 +1,9 @@
 const { validationResult } = require('express-validator');
-const { sendValidationErrorResponse } = require('../../utils/response.helper');
+const {
+  sendValidationErrorResponse,
+  sendServerErrorResponse,
+  sendNotFoundResponse,
+} = require('../../utils/response.helper');
 
 const validationResponse = (req, res, next) => {
   const errors = validationResult(req).array();
@@ -13,4 +17,16 @@ const validationResponse = (req, res, next) => {
   return next();
 };
 
-module.exports = { validationResponse };
+const serverResponse = (res, value, msg) => {
+  const formattedErrors = [{ value, msg }];
+
+  return sendServerErrorResponse(res, formattedErrors);
+};
+
+const notFoundResponse = (res, msg) => {
+  const formattedErrors = [{ msg }];
+
+  return sendNotFoundResponse(res, formattedErrors);
+};
+
+module.exports = { validationResponse, serverResponse, notFoundResponse };

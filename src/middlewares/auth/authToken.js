@@ -9,23 +9,23 @@ const validateToken = (req, res, next) => {
     const bearer = bearerHeader.split(' ');
     const bearerToken = bearer[1];
 
-    jwt.verify(bearerToken, process.env.TOKEN_SECRET, async (err, authData) => {
-      if (err) {
-        console.log(err, 'error in token verify');
+    jwt.verify(bearerToken, process.env.TOKEN_SECRET, async (error, authData) => {
+      if (error) {
+        console.log(error, 'error in token verify');
 
-        return sendAuthErrorResponse(res, 'Not Authorized');
+        return sendAuthErrorResponse(res, [{ msg: 'Not Authorized' }]);
       }
       const user = await User.findById(authData.userId);
 
       if (!user) {
-        return sendAuthErrorResponse(res, 'Not Authorized');
+        return sendAuthErrorResponse(res, [{ msg: 'Not Authorized' }]);
       }
       req.user = user;
 
       return next();
     });
   } else {
-    sendAuthErrorResponse(res, 'Not Authorized');
+    sendAuthErrorResponse(res, [{ msg: 'Not Authorized' }]);
   }
 };
 

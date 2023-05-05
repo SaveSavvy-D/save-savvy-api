@@ -1,11 +1,10 @@
 const { Budget } = require('../models');
 const {
   sendSuccessResponse,
-  sendServerErrorResponse,
-  sendNotFoundResponse,
   sendUpdateResponse,
   sendDeleteResponse,
 } = require('../utils/response.helper');
+const { serverResponse, notFoundResponse } = require('../middlewares/validators/validatorResponse');
 
 const FETCH_LIMIT = 5;
 
@@ -15,14 +14,14 @@ const BudgetController = {
       const budgets = await Budget.find();
 
       if (budgets.length === 0) {
-        return sendNotFoundResponse(res, 'No budget found');
+        return notFoundResponse(res, 'Budget not found');
       }
 
       return sendSuccessResponse(res, { budgets }, 'Budgets fetched successfully');
     } catch (error) {
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   getMyBudgets: async (req, res) => {
@@ -38,7 +37,7 @@ const BudgetController = {
       const count = await Budget.countDocuments({ userId: req.user.id });
       const remainingRecords = count - (skip + FETCH_LIMIT);
 
-      if (budgets.length === 0) return sendNotFoundResponse(res, 'No budget found');
+      if (budgets.length === 0) return notFoundResponse(res, 'Budget not found');
 
       return sendSuccessResponse(
         res,
@@ -48,7 +47,7 @@ const BudgetController = {
     } catch (error) {
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   getBudgetById: async (req, res) => {
@@ -61,7 +60,7 @@ const BudgetController = {
         userId,
       });
 
-      if (!budget) return sendNotFoundResponse(res, 'Budget not found');
+      if (!budget) return notFoundResponse(res, 'Budget not found');
 
       return sendSuccessResponse(
         res,
@@ -69,9 +68,9 @@ const BudgetController = {
         'Budget fetched successfully',
       );
     } catch (error) {
-      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Budget not found'); }
+      if (error.kind === 'ObjectId') { return notFoundResponse(res, 'Budget not found'); }
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   getBudgetByUserId: async (req, res) => {
@@ -82,7 +81,7 @@ const BudgetController = {
         userId,
       });
 
-      if (budgets.length === 0) return sendNotFoundResponse(res, 'No budget found');
+      if (budgets.length === 0) return notFoundResponse(res, 'Budget not found');
 
       return sendSuccessResponse(
         res,
@@ -90,10 +89,10 @@ const BudgetController = {
         'Budgets fetched successfully',
       );
     } catch (error) {
-      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Budget not found'); }
+      if (error.kind === 'ObjectId') { return notFoundResponse(res, 'Budget not found'); }
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   getBudgetByCategoryId: async (req, res) => {
@@ -106,7 +105,7 @@ const BudgetController = {
         userId,
       });
 
-      if (budgets.length === 0) return sendNotFoundResponse(res, 'No budget found');
+      if (budgets.length === 0) return notFoundResponse(res, 'Budget not found');
 
       return sendSuccessResponse(
         res,
@@ -114,10 +113,10 @@ const BudgetController = {
         'Budgets fetched successfully',
       );
     } catch (error) {
-      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Category not found'); }
+      if (error.kind === 'ObjectId') { return notFoundResponse(res, 'Category not found'); }
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   createBudget: async (req, res) => {
@@ -144,7 +143,7 @@ const BudgetController = {
     } catch (error) {
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   updateBudget: async (req, res) => {
@@ -181,10 +180,10 @@ const BudgetController = {
 
       return sendUpdateResponse(res, { budget }, 'Budget updated successfully');
     } catch (error) {
-      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Budget not found'); }
+      if (error.kind === 'ObjectId') { return notFoundResponse(res, 'Budget not found'); }
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   deleteBudget: async (req, res) => {
@@ -195,14 +194,14 @@ const BudgetController = {
       const deletedBudget = await Budget.findOneAndDelete({ _id: id, userId });
 
       if (!deletedBudget) {
-        return sendNotFoundResponse(res, 'Budget not found');
+        return notFoundResponse(res, 'Budget not found');
       }
 
-      return sendDeleteResponse(res, 'Budget deleted');
+      return sendDeleteResponse(res, 'Budget deleted successfully');
     } catch (error) {
-      if (error.kind === 'ObjectId') { return sendNotFoundResponse(res, 'Budget not found'); }
+      if (error.kind === 'ObjectId') { return notFoundResponse(res, 'Budget not found'); }
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 };

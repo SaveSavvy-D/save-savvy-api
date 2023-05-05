@@ -2,8 +2,8 @@ const { Category } = require('../models');
 const {
   sendSuccessResponse,
   sendFailureResponse,
-  sendServerErrorResponse,
 } = require('../utils/response.helper');
+const { serverResponse } = require('../middlewares/validators/validatorResponse');
 
 const CategoryController = {
   createCategory: async (req, res) => {
@@ -23,10 +23,10 @@ const CategoryController = {
         { category },
         'Category created successfully',
       );
-    } catch (err) {
-      console.error(err.message);
+    } catch (error) {
+      console.error(error.message);
 
-      return sendServerErrorResponse(res, err.message);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 
@@ -39,14 +39,14 @@ const CategoryController = {
       }
 
       return sendSuccessResponse(res, { category });
-    } catch (err) {
-      console.error(err.message);
+    } catch (error) {
+      console.error(error.message);
 
-      if (err.kind === 'ObjectId') {
+      if (error.kind === 'ObjectId') {
         return sendFailureResponse(res, [{ msg: 'Category not found' }]);
       }
 
-      return sendServerErrorResponse(res, err.message);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 
@@ -59,14 +59,14 @@ const CategoryController = {
       }
 
       return sendSuccessResponse(res, { categories });
-    } catch (err) {
-      console.error(err.message);
+    } catch (error) {
+      console.error(error.message);
 
-      if (err.kind === 'ObjectId') {
+      if (error.kind === 'ObjectId') {
         return sendFailureResponse(res, [{ msg: 'Categories not found' }]);
       }
 
-      return sendServerErrorResponse(res, err.message);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 };

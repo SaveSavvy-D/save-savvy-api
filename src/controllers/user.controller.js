@@ -5,8 +5,8 @@ const { Profile, User } = require('../models');
 const {
   sendSuccessResponse,
   sendFailureResponse,
-  sendServerErrorResponse,
 } = require('../utils/response.helper');
+const { serverResponse } = require('../middlewares/validators/validatorResponse');
 
 const UserController = {
   login: async (req, res) => {
@@ -26,7 +26,7 @@ const UserController = {
     } catch (error) {
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 
@@ -56,7 +56,7 @@ const UserController = {
     } catch (error) {
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
   deleteUser: async (req, res) => {
@@ -81,7 +81,7 @@ const UserController = {
     } catch (error) {
       console.log('error: ', error);
 
-      return sendServerErrorResponse(res, error);
+      return serverResponse(res, error.message, 'Internal Server Error');
     }
   },
 };
