@@ -6,8 +6,7 @@ const {
   sendUpdateResponse,
 } = require('../utils/response.helper');
 const { serverResponse, notFoundResponse } = require('../middlewares/validators/validatorResponse');
-
-const FETCH_LIMIT = 5;
+const { getCurrentYearMonth, getPageSkipLimit } = require('../utils/pagination.helper');
 
 const ExpenseController = {
   getAllExpenses: async (req, res) => {
@@ -28,19 +27,39 @@ const ExpenseController = {
 
   getExpenseByUserId: async (req, res) => {
     try {
-      const skip = FETCH_LIMIT * (parseInt(req.query.page) - 1);
-      const expenses = await Expense.find({ user: req.user.id })
+      const { page } = req.query;
+      const { id: userId } = req.user;
+      const { year, month } = getCurrentYearMonth();
+      const { skip = 0, limit = page === 'all' ? 0 : 5 } = getPageSkipLimit(page);
+      let count = 0;
+      let remainingRecords = 0;
+
+      const expenses = await Expense.find({
+        user: userId,
+        date: {
+          $gte: new Date(`${year}-${month}-01`),
+          $lte: new Date(`${year}-${month}-31`),
+        },
+      })
         .sort({ date: -1, _id: -1 })
         .skip(skip)
-        .limit(FETCH_LIMIT)
+        .limit(limit)
         .populate('user', 'email')
         .populate('category', 'title');
 
-      const count = await Expense.countDocuments({ user: req.user.id });
-      const remainingRecords = count - (skip + FETCH_LIMIT);
-
       if (expenses.length === 0) {
         return sendFailureResponse(res, [{ msg: 'Expenses not found for current user' }]);
+      }
+
+      if (req.query.page !== 'all') {
+        count = await Expense.countDocuments({
+          user: userId,
+          date: {
+            $gte: new Date(`${year}-${month}-01`),
+            $lte: new Date(`${year}-${month}-31`),
+          },
+        });
+        remainingRecords = count - (skip + limit);
       }
 
       return sendSuccessResponse(
