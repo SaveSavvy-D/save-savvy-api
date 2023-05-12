@@ -37,13 +37,13 @@ const ProfileController = {
       const {
         name, image, currency, earningDetails,
       } = req.body;
-      const profile = await Profile.findOne({ user: user.id });
+      const findProfile = await Profile.findOne({ user: user.id });
 
-      if (profile) {
+      if (findProfile) {
         return sendFailureResponse(res, [{ msg: 'Profile already exist' }]);
       }
 
-      const userProfile = await Profile.create({
+      const profile = await Profile.create({
         name,
         image,
         currency,
@@ -53,7 +53,7 @@ const ProfileController = {
 
       return sendSuccessResponse(
         res,
-        { userProfile },
+        { profile },
         'Profile created successfully',
       );
     } catch (error) {

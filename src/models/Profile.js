@@ -30,7 +30,7 @@ const profileSchema = new mongoose.Schema({
     type: [earningDetailsSchema],
     default: () => [
       {
-        month: new Date(),
+        month: new Date().toLocaleDateString('en-GB'),
         amount: 0,
       },
     ],
