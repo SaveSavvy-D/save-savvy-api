@@ -10,6 +10,6 @@ const { validateProfile } = require('../middlewares/validators/profileValidator'
 
 router.get('/', getProfile);
 router.post('/', validateProfile, createProfile);
-router.patch('/:id', validateProfile, updateProfile);
+router.patch('/update/:id', validateProfile, updateProfile);
 
 module.exports = router;
