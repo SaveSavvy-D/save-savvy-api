@@ -5,8 +5,7 @@ const {
   sendDeleteResponse,
 } = require('../utils/response.helper');
 const { serverResponse, notFoundResponse } = require('../middlewares/validators/validatorResponse');
-
-const FETCH_LIMIT = 5;
+const { getCurrentYearMonth, getPageSkipLimit } = require('../utils/pagination.helper');
 
 const BudgetController = {
   getAllBudgets: async (req, res) => {
@@ -26,18 +25,38 @@ const BudgetController = {
   },
   getMyBudgets: async (req, res) => {
     try {
-      const skip = FETCH_LIMIT * (parseInt(req.query.page) - 1);
-      const budgets = await Budget.find({ userId: req.user.id })
-        .sort({ startDate: -1, _id: -1 })
+      const { page } = req.query;
+      const { id: userId } = req.user;
+      const { year, month } = getCurrentYearMonth();
+      const { skip = 0, limit = page === 'all' ? 0 : 5 } = getPageSkipLimit(page);
+      let count = 0;
+      let remainingRecords = 0;
+
+      const budgets = await Budget.find({
+        userId,
+        endDate: {
+          $gte: new Date(),
+          $lte: new Date(`${year}-${month}-31`),
+        },
+      })
+        .sort({ endDate: 1, _id: -1 })
         .skip(skip)
-        .limit(FETCH_LIMIT)
+        .limit(limit)
         .populate('userId', 'email')
         .populate('categoryId', 'title');
 
-      const count = await Budget.countDocuments({ userId: req.user.id });
-      const remainingRecords = count - (skip + FETCH_LIMIT);
+      if (budgets.length === 0) return notFoundResponse(res, 'Budgets not found');
 
-      if (budgets.length === 0) return notFoundResponse(res, 'Budget not found');
+      if (req.query.page !== 'all') {
+        count = await Budget.countDocuments({
+          userId,
+          endDate: {
+            $gte: new Date(),
+            $lte: new Date(`${year}-${month}-31`),
+          },
+        });
+        remainingRecords = count - (skip + limit);
+      }
 
       return sendSuccessResponse(
         res,
