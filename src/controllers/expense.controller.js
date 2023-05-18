@@ -38,7 +38,7 @@ const ExpenseController = {
         user: userId,
         date: {
           $gte: new Date(`${year}-${month}-01`),
-          $lte: new Date(`${year}-${month}-31`),
+          $lt: new Date(`${year}-${month + 1}-01`),
         },
       })
         .sort({ date: -1, _id: -1 })
@@ -56,7 +56,7 @@ const ExpenseController = {
           user: userId,
           date: {
             $gte: new Date(`${year}-${month}-01`),
-            $lte: new Date(`${year}-${month}-31`),
+            $lt: new Date(`${year}-${month + 1}-01`),
           },
         });
         remainingRecords = count - (skip + limit);
