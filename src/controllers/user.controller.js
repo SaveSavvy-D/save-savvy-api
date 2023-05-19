@@ -6,7 +6,10 @@ const {
   sendSuccessResponse,
   sendFailureResponse,
 } = require('../utils/response.helper');
-const { serverResponse } = require('../middlewares/validators/validatorResponse');
+const {
+  serverResponse,
+  notFoundResponse,
+} = require('../middlewares/validators/validatorResponse');
 
 const UserController = {
   login: async (req, res) => {
@@ -23,6 +26,20 @@ const UserController = {
       });
 
       return sendSuccessResponse(res, { token }, 'User logged in successfully');
+    } catch (error) {
+      console.log('error: ', error);
+
+      return serverResponse(res, error.message, 'Internal Server Error');
+    }
+  },
+
+  fetchUser: async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id).select('-password');
+
+      if (!user) return notFoundResponse(res, 'User not found');
+
+      return sendSuccessResponse(res, { user }, 'User fetched successfully');
     } catch (error) {
       console.log('error: ', error);
 
