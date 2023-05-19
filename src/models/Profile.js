@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const ObjectID = mongoose.Schema.Types.ObjectId;
 
 const earningDetailsSchema = new mongoose.Schema({
-  month: {
-    type: Date,
-    default: new Date(),
+  date: {
+    type: String,
+    required: true,
   },
   amount: {
     type: Number,
@@ -30,7 +30,7 @@ const profileSchema = new mongoose.Schema({
     type: [earningDetailsSchema],
     default: () => [
       {
-        month: new Date(),
+        date: new Date().toISOString().substring(0, 7),
         amount: 0,
       },
     ],
