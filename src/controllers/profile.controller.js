@@ -3,8 +3,12 @@ const {
   sendSuccessResponse,
   sendFailureResponse,
   sendUpdateResponse,
+  sendDeleteResponse,
 } = require('../utils/response.helper');
-const { serverResponse, notFoundResponse } = require('../middlewares/validators/validatorResponse');
+const {
+  serverResponse,
+  notFoundResponse,
+} = require('../middlewares/validators/validatorResponse');
 
 const ProfileController = {
   getProfile: async (req, res) => {
@@ -19,7 +23,7 @@ const ProfileController = {
       return sendSuccessResponse(
         res,
         { profile },
-        'Profile fetched successfully',
+        'Profile fetched successfully'
       );
     } catch (error) {
       if (error.kind === 'ObjectId') {
@@ -34,9 +38,7 @@ const ProfileController = {
   createProfile: async (req, res) => {
     try {
       const { user } = req;
-      const {
-        name, image, currency, earningDetails,
-      } = req.body;
+      const { name, image, currency, earningDetails } = req.body;
       const findProfile = await Profile.findOne({ user: user.id });
 
       if (findProfile) {
@@ -54,7 +56,7 @@ const ProfileController = {
       return sendSuccessResponse(
         res,
         { profile },
-        'Profile created successfully',
+        'Profile created successfully'
       );
     } catch (error) {
       console.log('error: ', error);
@@ -69,20 +71,45 @@ const ProfileController = {
       const profile = await Profile.findOneAndUpdate(
         { _id: id, user: req.user.id },
         updateBody,
-        { new: true },
+        { new: true }
       );
 
       if (!profile) {
         return notFoundResponse(res, 'Profile not found');
       }
 
-      return sendUpdateResponse(res, { profile }, 'Profile updated successfully');
+      return sendUpdateResponse(
+        res,
+        { profile },
+        'Profile updated successfully'
+      );
     } catch (error) {
       if (error.kind === 'ObjectId') {
         return notFoundResponse(res, 'Profile not found');
       }
 
       console.log('error: ', error);
+
+      return serverResponse(res, error.message, 'Internal Server Error');
+    }
+  },
+  deleteProfile: async (req, res) => {
+    const userId = req.user.id;
+
+    console.log(userId);
+    try {
+      const deletedProfile = await Profile.findOneAndDelete({ user: userId });
+
+      console.log(deletedProfile);
+      if (!deletedProfile) {
+        return notFoundResponse(res, 'Profile not found');
+      }
+
+      return sendDeleteResponse(res, 'Profile deleted successfully');
+    } catch (error) {
+      if (error.kind === 'ObjectId') {
+        return notFoundResponse(res, 'Profile not found');
+      }
 
       return serverResponse(res, error.message, 'Internal Server Error');
     }

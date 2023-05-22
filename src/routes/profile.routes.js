@@ -5,6 +5,7 @@ const {
   getProfile,
   createProfile,
   updateProfile,
+  deleteProfile,
 } = require('../controllers/profile.controller');
 const {
   validateProfile,
@@ -13,5 +14,5 @@ const {
 router.get('/', getProfile);
 router.post('/', validateProfile, createProfile);
 router.patch('/:id', validateProfile, updateProfile);
-
+router.delete('/', deleteProfile);
 module.exports = router;
