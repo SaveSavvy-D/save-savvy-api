@@ -7,6 +7,15 @@ const getCurrentYearMonth = () => {
   };
 };
 
+const getGivenYearMonth = (date) => {
+  const now = new Date(date);
+
+  return {
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+  };
+};
+
 const getPageSkipLimit = (page) => {
   if (page === 'all') {
     return { skip: 0, limit: 0 };
@@ -20,4 +29,5 @@ const getPageSkipLimit = (page) => {
 module.exports = {
   getCurrentYearMonth,
   getPageSkipLimit,
+  getGivenYearMonth,
 };

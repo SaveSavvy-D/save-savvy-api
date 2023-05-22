@@ -4,6 +4,7 @@ const User = require('./User');
 const Expense = require('./Expense');
 const Alert = require('./Alert');
 const Budget = require('./Budget');
+const Notification = require('./Notification');
 
 module.exports = {
   Alert,
@@ -12,4 +13,5 @@ module.exports = {
   User,
   Category,
   Expense,
+  Notification,
 };

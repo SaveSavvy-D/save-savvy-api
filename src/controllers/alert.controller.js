@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable no-underscore-dangle */
 const { Alert, Budget } = require('../models');
 const {
@@ -40,20 +41,25 @@ const AlertController = {
   },
   getBudgetAlerts: async (req, res) => {
     try {
+      const skip = FETCH_LIMIT * (parseInt(req.query.page) - 1);
       const { budgetId } = req.params;
-      const userId = req.user.id;
       const alerts = await Alert.find({
         budgetId,
-        'budgetId.userId': userId,
-      });
+      })
+        .sort({ date: -1, _id: -1 })
+        .skip(skip)
+        .limit(FETCH_LIMIT);
 
       if (alerts.length === 0) {
         return notFoundResponse(res, 'No alerts found');
       }
 
+      const count = await Alert.find({ budgetId }).count();
+      const remainingRecords = count - (skip + FETCH_LIMIT);
+
       return sendSuccessResponse(
         res,
-        { alerts },
+        { alerts, remainingRecords },
         'Alerts fetched successfully',
       );
     } catch (error) {
