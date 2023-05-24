@@ -11,8 +11,7 @@ const {
   validateProfile,
 } = require('../middlewares/validators/profileValidator');
 
-router.get('/', getProfile);
+router.get('/', getProfile).delete(deleteProfile);
 router.post('/', validateProfile, createProfile);
 router.patch('/:id', validateProfile, updateProfile);
-router.delete('/', deleteProfile);
 module.exports = router;
