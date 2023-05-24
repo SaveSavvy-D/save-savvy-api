@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 const { Expense, Category } = require('../models/index');
 const {
   sendSuccessResponse,
@@ -7,6 +8,8 @@ const {
 } = require('../utils/response.helper');
 const { serverResponse, notFoundResponse } = require('../middlewares/validators/validatorResponse');
 const { getCurrentYearMonth, getPageSkipLimit } = require('../utils/pagination.helper');
+const validateExpense = require('../utils/validateExpense.helper');
+const sendAlerts = require('../utils/sendAlerts.helper');
 
 const ExpenseController = {
   getAllExpenses: async (req, res) => {
@@ -97,6 +100,11 @@ const ExpenseController = {
       };
 
       const expense = await Expense.create(newExpense);
+      const alertsToTrigger = await validateExpense(expense, req.user.id);
+
+      if (alertsToTrigger.length > 0) {
+        sendAlerts(alertsToTrigger, req.user, category.title);
+      }
 
       return sendSuccessResponse(
         res,
