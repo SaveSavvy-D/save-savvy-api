@@ -8,7 +8,14 @@ const comparePassword = async (reqPassword, dbPassword) => {
   return result;
 };
 
+const getPercentage = (percentage) => {
+  const percent = parseInt(percentage.split('%')[0], 10);
+
+  return percent;
+};
+
 module.exports = {
   hashpassword,
   comparePassword,
+  getPercentage,
 };

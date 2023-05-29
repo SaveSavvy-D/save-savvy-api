@@ -28,7 +28,7 @@ const NotificationController = {
 
       const notifications = await Notification.find({
         userId,
-      });
+      }).sort({ read: 1 });
 
       if (notifications.length === 0) return notFoundResponse(res, 'Notifications not found');
 

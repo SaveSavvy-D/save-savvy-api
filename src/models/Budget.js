@@ -7,13 +7,9 @@ const budgetSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  startDate: {
+  month: {
     type: Date,
     default: Date.now(),
-  },
-  endDate: {
-    type: Date,
-    default: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
   },
   userId: {
     type: ObjectID,

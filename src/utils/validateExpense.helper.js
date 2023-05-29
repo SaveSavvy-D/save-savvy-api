@@ -20,7 +20,7 @@ async function validateExpense(expense, userId) {
   const budgets = await Budget.find({
     categoryId: expense.category,
     userId,
-    startDate: {
+    month: {
       $gte: new Date(`${year}-${month}-01`),
       $lt: new Date(`${year}-${month + 1}-01`),
     },

@@ -7,6 +7,7 @@ const {
   sendFailureResponse,
 } = require('../utils/response.helper');
 const { serverResponse, notFoundResponse } = require('../middlewares/validators/validatorResponse');
+const { getPercentage } = require('../utils/user.helper');
 
 const FETCH_LIMIT = 5;
 
@@ -65,7 +66,7 @@ const AlertController = {
     } catch (error) {
       console.log('error: ', error);
       if (error.kind === 'ObjectId') {
-        return sendFailureResponse(res, 'Budget not found');
+        return sendFailureResponse(res, [{ msg: 'Budget not found' }]);
       }
 
       return serverResponse(res, error.message, 'Internal Server Error');
@@ -88,7 +89,7 @@ const AlertController = {
     } catch (error) {
       console.log('error: ', error);
       if (error.kind === 'ObjectId') {
-        return sendFailureResponse(res, 'Alert not found');
+        return sendFailureResponse(res, [{ msg: 'Alert not found' }]);
       }
 
       return serverResponse(res, error.message, 'Internal Server Error');
@@ -114,6 +115,26 @@ const AlertController = {
 
       if (!budget) {
         return sendFailureResponse(res, [{ msg: 'Budget not found' }]);
+      }
+
+      const existingAlerts = await Alert.find({
+        budgetId,
+      }).sort({ date: 1 });
+
+      let errorMessage = '';
+
+      existingAlerts.forEach((alert) => {
+        if (new Date(alert.date) < new Date(date)
+          && getPercentage(alert.thresholdPercentage) > getPercentage(thresholdPercentage)) {
+          errorMessage = 'Threshold percentage must be greater than the previous alerts for later dates.';
+        } else if (new Date(alert.date) > new Date(date)
+          && getPercentage(alert.thresholdPercentage) < getPercentage(thresholdPercentage)) {
+          errorMessage = 'Threshold percentage must be lower than the later alerts for earlier dates.';
+        }
+      });
+
+      if (errorMessage) {
+        return sendFailureResponse(res, [{ msg: errorMessage }]);
       }
 
       const alert = await Alert.create(newAlert);
