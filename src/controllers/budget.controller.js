@@ -3,9 +3,10 @@ const {
   sendSuccessResponse,
   sendUpdateResponse,
   sendDeleteResponse,
+  sendFailureResponse,
 } = require('../utils/response.helper');
 const { serverResponse, notFoundResponse } = require('../middlewares/validators/validatorResponse');
-const { getCurrentYearMonth, getPageSkipLimit } = require('../utils/pagination.helper');
+const { getPageSkipLimit } = require('../utils/pagination.helper');
 
 const BudgetController = {
   getAllBudgets: async (req, res) => {
@@ -27,19 +28,18 @@ const BudgetController = {
     try {
       const { page } = req.query;
       const { id: userId } = req.user;
-      const { year, month } = getCurrentYearMonth();
       const { skip = 0, limit = page === 'all' ? 0 : 5 } = getPageSkipLimit(page);
       let count = 0;
       let remainingRecords = 0;
 
       const budgets = await Budget.find({
         userId,
-        endDate: {
-          $gte: new Date(),
-          $lt: new Date(`${year}-${month + 1}-01`),
+        month: {
+          $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+          $lt: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
         },
       })
-        .sort({ endDate: 1, _id: -1 })
+        .sort({ month: 1, _id: -1 })
         .skip(skip)
         .limit(limit)
         .populate('userId', 'email')
@@ -50,9 +50,9 @@ const BudgetController = {
       if (req.query.page !== 'all') {
         count = await Budget.countDocuments({
           userId,
-          endDate: {
-            $gte: new Date(),
-            $lt: new Date(`${year}-${month + 1}-01`),
+          month: {
+            $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+            $lt: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
           },
         });
         remainingRecords = count - (skip + limit);
@@ -140,16 +140,32 @@ const BudgetController = {
   },
   createBudget: async (req, res) => {
     const {
-      threshold, startDate, endDate, categoryId,
+      threshold, month, categoryId,
     } = req.body;
     let budgetAttr = {};
+    const userId = req.user.id;
 
-    budgetAttr.userId = req.user.id;
-    if (startDate) budgetAttr.startDate = startDate;
-    if (endDate) budgetAttr.endDate = endDate;
+    budgetAttr.userId = userId;
+    if (month) budgetAttr.month = month;
+
     budgetAttr = { ...budgetAttr, threshold, categoryId };
 
     try {
+      const budgets = await Budget.find({
+        userId,
+        categoryId,
+        month: {
+          $gte: new Date(new Date(month).getFullYear(), new Date(month).getMonth(), 1),
+          $lt: new Date(new Date(month).getFullYear(), new Date(month).getMonth() + 1, 0),
+        },
+      });
+
+      if (budgets.length > 0) {
+        return sendFailureResponse(
+          res,
+          [{ msg: 'Budget for this month already exist for this category' }],
+        );
+      }
       const budget = new Budget(budgetAttr);
 
       await budget.save();
@@ -168,22 +184,14 @@ const BudgetController = {
   updateBudget: async (req, res) => {
     const { id } = req.params;
     const {
-      startDate, endDate, threshold, categoryId,
+      month, threshold, categoryId,
     } = req.body;
     const userId = req.user.id;
     let updatedAttr = {};
 
-    if (startDate) updatedAttr.startDate = startDate;
-    else updatedAttr.startDate = Date.now();
+    if (month) updatedAttr.month = month;
+    else updatedAttr.month = Date.now();
 
-    if (endDate) updatedAttr.endDate = endDate;
-    else {
-      updatedAttr.endDate = new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        0,
-      );
-    }
     updatedAttr = {
       ...updatedAttr,
       userId: req.user.id,
